@@ -79,7 +79,6 @@ export class ResultInterpreter {
     const totalWords = texts.reduce((sum, text) => sum + text.split(/\s+/).length, 0);
     const avgLength = totalWords / texts.length;
     const longTexts = texts.filter(t => t.length > 500);
-    const shortTexts = texts.filter(t => t.length < 100);
 
     // Content volume analysis
     findings.push({

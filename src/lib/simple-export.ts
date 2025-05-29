@@ -34,9 +34,9 @@ export class SimpleExporter {
     const headerString = Array.from(headers).join(',');
     rows.push(headerString);
 
-    const createCsvRow = (item: Record<string, any>) => {
+    const createCsvRow = (item: Record<string, unknown> | { title?: string; price?: string; id?: number; } | { url: string; text?: string; title?: string; } | { src: string; alt?: string; } | { text?: string; element?: string; } | { text?: string; level?: number; }) => {
       return Array.from(headers).map(header => {
-        const value = item[header];
+        const value = (item as Record<string, unknown>)[header];
         if (value === null || value === undefined) return '';
         const stringValue = String(value);
         // Escape quotes and commas
