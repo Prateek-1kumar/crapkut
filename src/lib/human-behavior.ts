@@ -1,4 +1,4 @@
-import { Page } from 'puppeteer';
+import { Page } from 'puppeteer-core';
 
 export class HumanBehaviorSimulator {
   private readonly page: Page;

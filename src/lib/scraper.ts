@@ -1,12 +1,11 @@
-import puppeteerExtra from 'puppeteer-extra';
-import StealthPlugin from 'puppeteer-extra-plugin-stealth';
-import type { Browser, Page } from 'puppeteer';
+import type { Browser, Page } from 'puppeteer-core';
 import type { ScrapingMetadata } from '@/types/scraping';
 import { ScrapingConfig, defaultConfig, USER_AGENTS, SCREEN_RESOLUTIONS } from './scraping-config';
 import { CaptchaManager, TwoCaptchaProvider, AntiCaptchaProvider, CapSolverProvider } from './captcha-manager';
 import { ProxyManager, ScraperAPIProvider, BrightDataProvider, SmartProxyProvider } from './proxy-manager';
 import { HumanBehaviorSimulator } from './human-behavior';
 import { logger } from '@/utils/logger';
+import chromium from '@sparticuz/chromium';
 import { 
   ExtractedData,
   ScrapingOptions, 
@@ -36,7 +35,7 @@ import {
 } from '@/utils/scraper-utils';
 
 // Configure puppeteer-extra with stealth plugin
-puppeteerExtra.use(StealthPlugin());
+// puppeteerExtra.use(StealthPlugin());
 
 export class IntelligentScraper {
   private browser: Browser | null = null;
@@ -112,6 +111,9 @@ export class IntelligentScraper {
     try {
       logger.info('Initializing enhanced scraper...');
       
+      // Dynamic import for puppeteer-core
+      const puppeteerCore = await import('puppeteer-core');
+
       // Get proxy if enabled
       const proxy = await this.proxyManager.getWorkingProxy();
       const proxyArgs = proxy ? [`--proxy-server=${proxy.protocol}://${proxy.host}:${proxy.port}`] : [];
@@ -121,33 +123,39 @@ export class IntelligentScraper {
       const viewport = SCREEN_RESOLUTIONS[Math.floor(Math.random() * SCREEN_RESOLUTIONS.length)];
 
       const launchOptions = {
-        headless: this.config.browser.headless,
-        slowMo: this.config.browser.slowMo,
         args: [
-          '--no-sandbox',
-          '--disable-setuid-sandbox',
-          '--disable-dev-shm-usage',
-          '--disable-accelerated-2d-canvas',
-          '--no-first-run',
-          '--no-zygote',
-          '--disable-gpu',
-          '--disable-blink-features=AutomationControlled',
-          '--disable-features=VizDisplayCompositor',
-          '--disable-web-security',
-          '--disable-features=site-per-process',
-          '--flag-switches-begin',
-          '--flag-switches-end',
-          '--disable-extensions-except=/path/to/extension',
-          '--disable-extensions',
-          '--disable-default-apps',
-          '--window-size=1920,1080',
-          '--start-maximized',
+          ...chromium.args, // Use chromium.args
           ...proxyArgs,
         ],
+        defaultViewport: chromium.defaultViewport, // Use chromium.defaultViewport
+        executablePath: await chromium.executablePath(), // Use chromium.executablePath
+        headless: chromium.headless, // Use chromium.headless
+        ignoreHTTPSErrors: true, // Add this for consistency
+        // slowMo: this.config.browser.slowMo, // Consider if slowMo is needed with chromium
+        // Original args that might still be relevant or can be reviewed:
+        // '--no-sandbox', // Included in chromium.args
+        // '--disable-setuid-sandbox', // Included in chromium.args
+        // '--disable-dev-shm-usage', // Included in chromium.args
+        // '--disable-accelerated-2d-canvas',
+        // '--no-first-run',
+        // '--no-zygote',
+        // '--disable-gpu', // Included in chromium.args if headless is true
+        // '--disable-blink-features=AutomationControlled',
+        // '--disable-features=VizDisplayCompositor',
+        // '--disable-web-security',
+        // '--disable-features=site-per-process',
+        // '--flag-switches-begin',
+        // '--flag-switches-end',
+        // '--disable-extensions-except=/path/to/extension',
+        // '--disable-extensions',
+        // '--disable-default-apps',
+        // '--window-size=1920,1080', // defaultViewport handles this
+        // '--start-maximized',
       };
 
       // Use puppeteer-extra for stealth
-      this.browser = await puppeteerExtra.launch(launchOptions);
+      // this.browser = await puppeteerExtra.launch(launchOptions); // Remove this
+      this.browser = await puppeteerCore.launch(launchOptions); // Use puppeteerCore.launch
 
       this.page = await this.browser.newPage();
       

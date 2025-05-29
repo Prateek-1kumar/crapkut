@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { Page } from 'puppeteer';
+import type { Page } from 'puppeteer-core';
 
 export interface CaptchaProvider {
   name: string;
