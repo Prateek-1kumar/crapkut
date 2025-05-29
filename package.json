@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@sparticuz/chromium": "^133.0.0",
     "@types/puppeteer": "^5.4.7",
     "axios": "^1.9.0",
     "class-variance-authority": "^0.7.1",

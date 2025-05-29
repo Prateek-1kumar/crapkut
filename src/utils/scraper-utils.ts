@@ -2,7 +2,7 @@
  * Utility functions for web scraping operations
  */
 
-import { type Page } from 'puppeteer';
+import { type Page } from 'puppeteer-core'; // Changed from puppeteer to puppeteer-core
 import type { Product, Image, Link, Heading, TextParagraph, GenericElement } from '@/types/scraper';
 
 /**

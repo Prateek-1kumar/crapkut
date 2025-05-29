@@ -1,10 +1,11 @@
 // Enhanced scraper designed for production use
 // This version uses dynamic imports to avoid Next.js build issues
-import type { Browser, Page } from 'puppeteer';
+import type { Browser, Page } from 'puppeteer-core'; // Changed from puppeteer to puppeteer-core
 import type { ScrapingMetadata } from '@/types/scraping';
 import { ScrapingConfig, defaultConfig } from './scraping-config';
 import { logger } from '@/utils/logger';
-import { 
+import chromium from '@sparticuz/chromium'; // Added import
+import {
   ScrapingOptions, 
   ScrapingResult, 
   RetryState,
@@ -52,28 +53,31 @@ export class ProductionScraper {
       logger.info('Initializing production scraper...');
       
       // Dynamic import to avoid build issues
-      const puppeteer = await import('puppeteer');
+      const puppeteerCore = await import('puppeteer-core');
       
       const launchOptions = {
-        headless: this.config.browser.headless,
-        slowMo: this.config.browser.slowMo,
-        args: [
-          '--no-sandbox',
-          '--disable-setuid-sandbox',
-          '--disable-dev-shm-usage',
-          '--disable-accelerated-2d-canvas',
-          '--no-first-run',
-          '--no-zygote',
-          '--disable-gpu',
-          '--disable-blink-features=AutomationControlled',
-          '--disable-features=VizDisplayCompositor',
-          '--disable-web-security',
-          '--disable-features=site-per-process',
-          '--window-size=1920,1080',
-        ],
+        args: chromium.args, // Use args from @sparticuz/chromium
+        defaultViewport: chromium.defaultViewport,
+        executablePath: await chromium.executablePath(), // Use executablePath from @sparticuz/chromium
+        headless: chromium.headless, // Use headless from @sparticuz/chromium
+        ignoreHTTPSErrors: true,
+        // Original args that might still be relevant or can be reviewed:
+        // '--no-sandbox',
+        // '--disable-setuid-sandbox',
+        // '--disable-dev-shm-usage',
+        // '--disable-accelerated-2d-canvas',
+        // '--no-first-run',
+        // '--no-zygote',
+        // '--disable-gpu',
+        // '--disable-blink-features=AutomationControlled',
+        // '--disable-features=VizDisplayCompositor',
+        // '--disable-web-security',
+        // '--disable-features=site-per-process',
+        // '--window-size=1920,1080',
+        // slowMo: this.config.browser.slowMo, // slowMo might not be ideal for serverless
       };
 
-      this.browser = await puppeteer.default.launch(launchOptions);
+      this.browser = await puppeteerCore.launch(launchOptions); // Use puppeteerCore.launch
       this.page = await this.browser.newPage();
       
       // Set viewport
