@@ -334,7 +334,7 @@ export class ResultInterpreter {
       },
       exportSummary: {
         humanReadableTitle: this.generateExportTitle(),
-        businessValue: this.generateBusinessValue(),
+        businessValue: this.generateBusinessValue(allInsights), // Pass allInsights
         keyMetrics: this.generateKeyMetrics()
       }
     };
@@ -368,8 +368,7 @@ export class ResultInterpreter {
     return `${mainContent} Report${queryPart} (${date})`;
   }
 
-  private generateBusinessValue(): string {
-    const insights = this.interpretResults().insights;
+  private generateBusinessValue(insights: BusinessInsight[]): string { // Accept insights as a parameter
     const highImpactInsights = insights.filter(i => i.impact === 'high').length;
     
     if (highImpactInsights > 0) {
