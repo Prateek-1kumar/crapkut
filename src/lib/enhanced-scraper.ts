@@ -70,9 +70,10 @@ export class ProductionScraper {
       
       // Dynamic import to avoid build issues - choose based on environment
       const isProduction = process.env.NODE_ENV === 'production';
+      const isVercel = process.env.VERCEL === '1';
       
-      if (isProduction) {
-        // Production (serverless) environment using chromium
+      if (isProduction || isVercel) {
+        // Production/Vercel (serverless) environment using chromium
         const puppeteerCore = await import('puppeteer-core');
         const chromium = await import('@sparticuz/chromium');
         
@@ -83,12 +84,15 @@ export class ProductionScraper {
             '--disable-setuid-sandbox',
             '--disable-dev-shm-usage',
             '--disable-gpu',
+            '--disable-web-security',
+            '--single-process', // Important for Vercel
+            '--no-zygote', // Important for Vercel
           ],
           defaultViewport: strategyConfig.viewport,
           executablePath: await chromium.default.executablePath(),
-          headless: adaptiveConfig.browser.headless,
+          headless: true, // Always headless in production
           ignoreHTTPSErrors: true,
-          timeout: 15000,
+          timeout: 3000, // Fast timeout for Vercel serverless
         };
         this.browser = await puppeteerCore.launch(launchOptions);
       } else {
@@ -114,7 +118,7 @@ export class ProductionScraper {
             defaultViewport: strategyConfig.viewport,
             headless: adaptiveConfig.browser.headless,
             ignoreHTTPSErrors: true,
-            timeout: 15000,
+            timeout: 3000, // Fast timeout for development too
           };
           this.browser = await puppeteer.launch(launchOptions) as any;
         } catch (devError) {
@@ -133,7 +137,7 @@ export class ProductionScraper {
             defaultViewport: strategyConfig.viewport,
             headless: adaptiveConfig.browser.headless,
             ignoreHTTPSErrors: true,
-            timeout: 15000,
+            timeout: 5000, // Faster timeout for fallback too
           };
           this.browser = await puppeteerCore.launch(launchOptions);
         }

@@ -100,14 +100,14 @@ export class AdaptiveConfigProvider {
         humanBehavior: false
       },
       timeouts: {
-        navigation: 12000,
-        page: 12000
+        navigation: 3000,  // 3 seconds for fast strategy
+        page: 3000
       },
       viewport: {
         width: 1024,
         height: 768
       },
-      waitTime: 500
+      waitTime: 200  // Minimal wait time for fast strategy
     },
     balanced: {
       resourceBlocking: {
@@ -121,14 +121,14 @@ export class AdaptiveConfigProvider {
         humanBehavior: false
       },
       timeouts: {
-        navigation: 18000,
-        page: 18000
+        navigation: 5000,  // 5 seconds for balanced strategy
+        page: 5000
       },
       viewport: {
         width: 1366,
         height: 768
       },
-      waitTime: 1000
+      waitTime: 500  // Short wait time for balanced strategy
     },
     stealth: {
       resourceBlocking: {
@@ -142,14 +142,14 @@ export class AdaptiveConfigProvider {
         humanBehavior: true
       },
       timeouts: {
-        navigation: 25000,
-        page: 25000
+        navigation: 8000,  // 8 seconds max for stealth strategy
+        page: 8000
       },
       viewport: {
         width: 1920,
         height: 1080
       },
-      waitTime: 2000
+      waitTime: 1000  // Still quick for serverless
     }
   };
 

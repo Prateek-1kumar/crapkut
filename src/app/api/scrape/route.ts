@@ -59,19 +59,19 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // Start timing
     const scrapeStartTime = Date.now();
 
-    // Set aggressive timeout for serverless environment
-    const serverlessTimeout = parseInt(process.env.VERCEL_FUNCTION_TIMEOUT ?? '45000'); // 45 seconds max
+    // Set aggressive timeout for Vercel serverless environment (55 seconds max)
+    const serverlessTimeout = parseInt(process.env.VERCEL_FUNCTION_TIMEOUT ?? '55000'); 
     
-    // Perform adaptive scraping with fallback strategies
+    // Perform adaptive scraping with fallback strategies - fast timeouts for 60s limit
     const result = await Promise.race([
       scraperInstance.scrapeWithFallback({
         url,
         extractionSpec,
         userAgent,
-        timeout: 15000, // Give each strategy more time since we have fallbacks
+        timeout: 8000, // 8 seconds per strategy attempt
       }),
       new Promise<never>((_, reject) => 
-        setTimeout(() => reject(new Error('Function timeout - the page took too long to process. Try a simpler page or more specific extraction.')), serverlessTimeout)
+        setTimeout(() => reject(new Error('Function timeout - Vercel serverless limit reached. Try a simpler page.')), serverlessTimeout)
       )
     ]);
 

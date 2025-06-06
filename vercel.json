@@ -1,11 +1,12 @@
 {
   "functions": {
     "src/app/api/scrape/route.ts": {
-      "maxDuration": 300
+      "maxDuration": 60
     }
   },
   "regions": ["cle1"],
   "env": {
-    "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD": "true"
+    "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD": "true",
+    "VERCEL_FUNCTION_TIMEOUT": "55000"
   }
 }
