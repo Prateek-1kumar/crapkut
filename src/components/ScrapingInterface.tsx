@@ -11,7 +11,7 @@ import {
 } from 'react-icons/fi';
 import { cn } from '@/lib/utils';
 import type {  ExtractedData, ScrapeResponse } from '@/types/scraping';
-import ResultDisplay from './results/ResultDisplay';
+import EnhancedResultDisplay from './results/EnhancedResultDisplay';
 
 interface ScrapingInterfaceProps {
   className?: string;
@@ -26,6 +26,11 @@ const ScrapingInterface: React.FC<ScrapingInterfaceProps> = ({ className }) => {
   const [progress, setProgress] = useState<number>(0);
   const [result, setResult] = useState<ExtractedData | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [siteAnalysis, setSiteAnalysis] = useState<{
+    category: string;
+    complexity: string;
+    strategy: string;
+  } | null>(null);
 
   const handleUrlChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setUrl(event.target.value);
@@ -176,6 +181,7 @@ const ScrapingInterface: React.FC<ScrapingInterfaceProps> = ({ className }) => {
     setProgress(10);
     setResult(null);
     setErrorMessage('');
+    setSiteAnalysis(null);
 
     try {
       setStatus('scraping');
@@ -204,6 +210,15 @@ const ScrapingInterface: React.FC<ScrapingInterfaceProps> = ({ className }) => {
         setResult(data.data);
         setStatus('completed');
         setProgress(100);
+        
+        // Extract site analysis from metadata if available
+        if (data.metadata?.siteAnalysis) {
+          setSiteAnalysis({
+            category: data.metadata.siteAnalysis.category,
+            complexity: data.metadata.siteAnalysis.complexity,
+            strategy: data.metadata.siteAnalysis.strategy,
+          });
+        }
       } else {
         throw new Error(data.error ?? 'Scraping failed');
       }
@@ -273,9 +288,14 @@ const ScrapingInterface: React.FC<ScrapingInterfaceProps> = ({ className }) => {
         <p className="text-lg text-gray-600 dark:text-gray-400">
           Just dont tell your friends about this
         </p>
-        <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300 rounded-full text-sm font-medium">
-          <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
-          <span>Real-time mode: Results are not saved, refresh to start over</span>
+        <div className="flex flex-col sm:flex-row gap-2 items-center justify-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300 rounded-full text-sm font-medium">
+            <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
+            <span>Real-time mode: Results are not saved</span>
+          </div>
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-100 dark:bg-amber-900/20 text-amber-800 dark:text-amber-300 rounded-full text-sm font-medium">
+            <span>⚡ Optimized for speed: 45s timeout</span>
+          </div>
         </div>
       </motion.div>
 
@@ -323,14 +343,14 @@ const ScrapingInterface: React.FC<ScrapingInterfaceProps> = ({ className }) => {
             value={extractionSpec}
             onChange={handleExtractionSpecChange}
             onKeyDown={handleSpecKeyDown}
-            placeholder="Describe what data you want to extract, e.g., 'Extract all product titles and prices' or 'Get all image URLs from the gallery'"
+            placeholder="Describe what data you want to extract, e.g., 'Extract all product titles and prices' or 'Get all course names and descriptions'. Keep it simple for faster results."
             aria-label="Describe what data you want to extract from the website"
             tabIndex={0}
             rows={4}
             className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 resize-vertical"
           />
           <p className="text-xs text-gray-500 dark:text-gray-400">
-            Press Cmd+Enter to start scraping
+            Press Cmd+Enter to start scraping • Simple requests work faster • Heavy pages may timeout
           </p>
         </div>
 
@@ -390,6 +410,49 @@ const ScrapingInterface: React.FC<ScrapingInterfaceProps> = ({ className }) => {
         )}
       </AnimatePresence>
 
+      {/* Site Analysis Information */}
+      <AnimatePresence>
+        {siteAnalysis && status === 'completed' && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4"
+          >
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-blue-800 dark:text-blue-300">
+                  🎯 Adaptive Strategy Used
+                </span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
+                <div className="flex flex-col gap-1">
+                  <span className="text-gray-500 dark:text-gray-400">Category</span>
+                  <span className="font-medium text-blue-700 dark:text-blue-300 capitalize">
+                    {siteAnalysis.category}
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span className="text-gray-500 dark:text-gray-400">Complexity</span>
+                  <span className="font-medium text-blue-700 dark:text-blue-300 capitalize">
+                    {siteAnalysis.complexity}
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span className="text-gray-500 dark:text-gray-400">Strategy</span>
+                  <span className="font-medium text-blue-700 dark:text-blue-300 capitalize">
+                    {siteAnalysis.strategy}
+                  </span>
+                </div>
+              </div>
+              <div className="text-xs text-blue-600 dark:text-blue-400">
+                The system automatically analyzed the website and selected the optimal scraping approach.
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Error Message */}
       <AnimatePresence>
         {errorMessage && (
@@ -418,7 +481,7 @@ const ScrapingInterface: React.FC<ScrapingInterfaceProps> = ({ className }) => {
             exit={{ opacity: 0, y: -20 }}
             className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6"
           >
-            <ResultDisplay 
+            <EnhancedResultDisplay 
               data={result} 
               onDownload={handleDownloadResults}
               userQuery={extractionSpec}

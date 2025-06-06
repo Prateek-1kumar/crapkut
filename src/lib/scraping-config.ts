@@ -94,17 +94,17 @@ export interface ScrapingConfig {
 export const defaultConfig: ScrapingConfig = {
   browser: {
     headless: true,
-    slowMo: 50,
-    timeout: 60000,
+    slowMo: 0, // Remove slowMo for serverless speed
+    timeout: 15000, // Reduced from 60000 to 15000
     viewport: {
-      width: 1366,
+      width: 1024, // Smaller viewport for speed
       height: 768,
     },
   },
   
   stealth: {
-    enabled: true,
-    plugins: ['stealth', 'recaptcha'],
+    enabled: false, // Disable for speed in serverless
+    plugins: [],
   },
 
   proxy: {
@@ -117,15 +117,15 @@ export const defaultConfig: ScrapingConfig = {
   captcha: {
     enabled: false,
     providers: {},
-    timeout: 120000, // 2 minutes
-    maxRetries: 3,
+    timeout: 30000, // Reduced from 120000 to 30000
+    maxRetries: 1, // Reduced from 3 to 1
   },
 
   humanBehavior: {
-    enabled: true,
-    mouseMovement: true,
-    randomDelays: true,
-    scrollBehavior: true,
+    enabled: false, // Disable for serverless speed
+    mouseMovement: false,
+    randomDelays: false,
+    scrollBehavior: false,
     typingSpeed: {
       min: 50,
       max: 150,
@@ -133,16 +133,16 @@ export const defaultConfig: ScrapingConfig = {
   },
 
   retry: {
-    maxAttempts: 3,
-    backoffMultiplier: 2,
-    initialDelay: 1000,
-    maxDelay: 30000,
+    maxAttempts: 2, // Reduced from 3 to 2
+    backoffMultiplier: 1.5, // Reduced from 2 to 1.5
+    initialDelay: 500, // Reduced from 1000 to 500
+    maxDelay: 5000, // Reduced from 30000 to 5000
   },
 
   rateLimit: {
-    enabled: true,
-    requestsPerMinute: 30,
-    concurrent: 3,
+    enabled: false, // Disable for serverless to avoid delays
+    requestsPerMinute: 60, // Increased for faster processing
+    concurrent: 1, // Reduced for serverless memory limits
   },
 };
 

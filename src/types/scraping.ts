@@ -56,6 +56,11 @@ export interface ScrapingMetadata {
   proxyUsed?: string;
   userAgent?: string;
   captchaSolved?: boolean;
+  siteAnalysis?: {
+    category: string;
+    complexity: string;
+    strategy: string;
+  };
 }
 
 export interface ScrapeJob {
