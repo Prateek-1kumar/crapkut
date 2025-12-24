@@ -21,8 +21,8 @@ export interface BrowserConfig {
 
 const DEFAULT_CONFIG: BrowserConfig = {
     headless: true,
-    timeout: 30000,
-    blockResources: true,
+    timeout: 15000, // 15 seconds - faster failure feedback
+    blockResources: false, // Don't block images - we need product images
 };
 
 /**

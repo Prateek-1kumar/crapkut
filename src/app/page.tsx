@@ -1,10 +1,9 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FiAlertCircle, FiClock } from 'react-icons/fi';
+import { FiAlertTriangle, FiClock } from 'react-icons/fi';
 import SearchBar from '@/components/SearchBar';
-import ProductGrid from '@/components/ProductGrid';
+import ComparisonView from '@/components/ComparisonView';
 import type { SearchResponse, ScrapeResult, VendorError } from '@/lib/types';
 
 export default function HomePage() {
@@ -43,122 +42,69 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="container py-12">
-      {/* Hero Section */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="text-center mb-12"
-      >
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-          Find the <span className="text-gradient">Best Prices</span>
-          <br />
-          Across India
+    <div className="container" style={{ paddingTop: '2rem' }}>
+      {/* Search Section */}
+      <div style={{ maxWidth: '700px', margin: '0 auto 2rem' }}>
+        <h1 style={{ fontSize: '1.5rem', marginBottom: '1rem', textAlign: 'center' }}>
+          Compare Prices Across Stores
         </h1>
-        <p className="text-lg md:text-xl text-[var(--color-text-secondary)] max-w-2xl mx-auto mb-8">
-          Compare prices from Amazon, Flipkart, Myntra, Croma, Ajio, and more.
-          One search, all platforms, best deals.
-        </p>
-
-        {/* Vendor logos */}
-        <div className="flex flex-wrap items-center justify-center gap-4 mb-8 opacity-60">
-          {['Amazon', 'Flipkart', 'eBay', 'Myntra', 'Croma', 'Ajio', 'Snapdeal'].map((vendor) => (
-            <span
-              key={vendor}
-              className="px-3 py-1 text-sm bg-[var(--color-bg-tertiary)] rounded-full text-[var(--color-text-muted)]"
-            >
-              {vendor}
-            </span>
-          ))}
-        </div>
-      </motion.div>
-
-      {/* Search Bar */}
-      <SearchBar onSearch={handleSearch} isLoading={isLoading} className="mb-12" />
+        <SearchBar onSearch={handleSearch} isLoading={isLoading} />
+      </div>
 
       {/* Timing info */}
-      <AnimatePresence>
-        {timing && !isLoading && products.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="flex items-center justify-center gap-2 text-sm text-[var(--color-text-muted)] mb-6"
-          >
-            <FiClock className="w-4 h-4" />
-            <span>Searched all platforms in {(timing / 1000).toFixed(1)}s</span>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {timing && !isLoading && products.length > 0 && (
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '0.5rem',
+          marginBottom: '1rem',
+          fontSize: '0.875rem',
+          color: 'var(--color-text-muted)'
+        }}>
+          <FiClock size={14} />
+          <span>Found {products.length} products in {(timing / 1000).toFixed(1)}s</span>
+        </div>
+      )}
 
       {/* Errors (partial failures) */}
-      <AnimatePresence>
-        {errors.length > 0 && !isLoading && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="mb-6 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-lg"
-          >
-            <div className="flex items-start gap-3">
-              <FiAlertCircle className="w-5 h-5 text-yellow-500 flex-shrink-0 mt-0.5" />
-              <div>
-                <p className="text-sm text-yellow-200">
-                  Some platforms could not be searched: {errors.map(e => e.vendor).join(', ')}
-                </p>
-              </p>
-              <p className="text-xs text-yellow-200/60 mt-1">
-                Showing results from available platforms.
-              </p>
-            </div>
+      {errors.length > 0 && !isLoading && (
+        <div className="alert alert-warning" style={{ marginBottom: '1rem' }}>
+          <FiAlertTriangle size={16} style={{ flexShrink: 0, marginTop: '2px' }} />
+          <div>
+            <strong>Some stores could not be searched:</strong> {errors.map(e => e.vendor).join(', ')}
           </div>
-          </motion.div>
-        )}
-    </AnimatePresence>
+        </div>
+      )}
 
-      {/* Results */ }
-  <ProductGrid products={products} isLoading={isLoading} />
+      {/* Results */}
+      <ComparisonView products={products} isLoading={isLoading} />
 
-  {/* Empty state */ }
-  <AnimatePresence>
-    {hasSearched && !isLoading && products.length === 0 && errors.length === 0 && (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="text-center py-20"
-      >
-        <div className="text-6xl mb-4">🔍</div>
-        <h3 className="text-xl font-semibold text-[var(--color-text-primary)] mb-2">
-          No products found for &ldquo;{searchQuery}&rdquo;
-        </h3>
-        <p className="text-[var(--color-text-muted)]">
-          Try searching for a different product or check your spelling.
-        </p>
-      </motion.div>
-    )}
-  </AnimatePresence>
+      {/* Empty state */}
+      {hasSearched && !isLoading && products.length === 0 && errors.length === 0 && (
+        <div style={{ textAlign: 'center', padding: '3rem 1rem' }}>
+          <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🔍</div>
+          <h3 style={{ fontSize: '1.125rem', marginBottom: '0.5rem' }}>
+            No products found for &ldquo;{searchQuery}&rdquo;
+          </h3>
+          <p style={{ color: 'var(--color-text-muted)' }}>
+            Try a different search term.
+          </p>
+        </div>
+      )}
 
-  {/* Initial state */ }
-  <AnimatePresence>
-    {!hasSearched && !isLoading && (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="text-center py-20"
-      >
-        <div className="text-6xl mb-4">💰</div>
-        <h3 className="text-xl font-semibold text-[var(--color-text-primary)] mb-2">
-          Start comparing prices
-        </h3>
-        <p className="text-[var(--color-text-muted)]">
-          Enter a product name above to find the best deals across all platforms.
-        </p>
-      </motion.div>
-    )}
-  </AnimatePresence>
-    </div >
+      {/* Initial state */}
+      {!hasSearched && !isLoading && (
+        <div style={{ textAlign: 'center', padding: '3rem 1rem' }}>
+          <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>💰</div>
+          <h3 style={{ fontSize: '1.125rem', marginBottom: '0.5rem' }}>
+            Search for any product
+          </h3>
+          <p style={{ color: 'var(--color-text-muted)' }}>
+            Enter a product name above to compare prices across stores.
+          </p>
+        </div>
+      )}
+    </div>
   );
 }

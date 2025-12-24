@@ -3,17 +3,13 @@ import { vendorInfo } from '@/lib/vendors';
 
 interface VendorBadgeProps {
     vendor: Vendor;
-    className?: string;
 }
 
-export default function VendorBadge({ vendor, className = '' }: VendorBadgeProps) {
+export default function VendorBadge({ vendor }: VendorBadgeProps) {
     const info = vendorInfo[vendor];
 
     return (
-        <span
-            className={`badge vendor-${vendor} ${className}`}
-            style={{ backgroundColor: info.color }}
-        >
+        <span className={`badge vendor-${vendor}`}>
             {info.name}
         </span>
     );

@@ -3,7 +3,7 @@ import { BaseScraper } from './base';
 import type { ScrapeResult, Vendor } from '../types';
 
 /**
- * Flipkart Scraper
+ * Flipkart Scraper - Updated with verified selectors
  */
 export class FlipkartScraper extends BaseScraper {
     vendor: Vendor = 'flipkart';
@@ -29,6 +29,13 @@ export class FlipkartScraper extends BaseScraper {
             // No popup
         }
 
+        // Wait for product cards to load
+        try {
+            await page.waitForSelector('div[data-id]', { timeout: 10000 });
+        } catch {
+            console.log('[flipkart] No product cards found after waiting');
+        }
+
         return page.evaluate(() => {
             const products: Partial<{
                 title: string;
@@ -37,86 +44,79 @@ export class FlipkartScraper extends BaseScraper {
                 url: string;
                 image?: string;
                 rating?: number;
-                reviews?: number;
                 discount?: string;
             }>[] = [];
 
-            // Flipkart uses different card layouts for different categories
-            // Try multiple selectors
-            const cardSelectors = [
-                '._1AtVbE',
-                '._4ddWXP',
-                '[data-id]',
-                '._2kHMtA',
-                '._1xHGtK',
-            ];
+            // Flipkart uses data-id on product cards (verified from live DOM)
+            const cards = document.querySelectorAll('div[data-id]');
 
-            for (const selector of cardSelectors) {
-                const cards = document.querySelectorAll(selector);
+            cards.forEach((card) => {
+                try {
+                    // Title - multiple possible selectors (verified from live DOM)
+                    const titleEl = card.querySelector('a.atJtCj') ||
+                        card.querySelector('a.IRpwF-') ||
+                        card.querySelector('a.W_N97B') ||
+                        card.querySelector('._4rR01T') ||
+                        card.querySelector('.s1Q9rs');
+                    const title = (titleEl as HTMLElement)?.title ||
+                        titleEl?.textContent?.trim();
 
-                cards.forEach((card) => {
-                    try {
-                        // Title - multiple possible selectors
-                        const titleEl = card.querySelector('._4rR01T') ||
-                            card.querySelector('.s1Q9rs') ||
-                            card.querySelector('a[title]') ||
-                            card.querySelector('.IRpwTa');
-                        const title = titleEl?.textContent?.trim() ||
-                            (titleEl as HTMLElement)?.getAttribute('title');
-
-                        // URL
-                        const linkEl = card.querySelector('a._1fQZEK') ||
-                            card.querySelector('a.s1Q9rs') ||
-                            card.querySelector('a[href*="/p/"]') as HTMLAnchorElement;
-                        let url = linkEl?.getAttribute('href') || '';
-                        if (url && !url.startsWith('http')) {
-                            url = 'https://www.flipkart.com' + url;
-                        }
-
-                        // Price
-                        const priceEl = card.querySelector('._30jeq3') ||
-                            card.querySelector('._1_WHN1');
-                        const priceText = priceEl?.textContent?.replace(/[₹,]/g, '') || '';
-                        const price = parseFloat(priceText);
-
-                        // Original price
-                        const originalPriceEl = card.querySelector('._3I9_wc');
-                        const originalPriceText = originalPriceEl?.textContent?.replace(/[₹,]/g, '') || '';
-                        const originalPrice = originalPriceText ? parseFloat(originalPriceText) : undefined;
-
-                        // Image
-                        const imgEl = (card.querySelector('img._396cs4') ||
-                            card.querySelector('img._2r_T1I')) as HTMLImageElement | null;
-                        const image = imgEl?.src;
-
-                        // Rating
-                        const ratingEl = card.querySelector('._3LWZlK');
-                        const ratingText = ratingEl?.textContent;
-                        const rating = ratingText ? parseFloat(ratingText) : undefined;
-
-                        // Discount
-                        const discountEl = card.querySelector('._3Ay6Sb');
-                        const discount = discountEl?.textContent?.trim();
-
-                        if (title && price > 0 && url) {
-                            products.push({
-                                title,
-                                price,
-                                originalPrice,
-                                url,
-                                image,
-                                rating,
-                                discount,
-                            });
-                        }
-                    } catch {
-                        // Skip malformed cards
+                    // URL - get from any anchor in the card
+                    const linkEl = card.querySelector('a[href*="/p/"]') ||
+                        card.querySelector('a.atJtCj') ||
+                        card.querySelector('a') as HTMLAnchorElement;
+                    let url = linkEl?.getAttribute('href') || '';
+                    if (url && !url.startsWith('http')) {
+                        url = 'https://www.flipkart.com' + url;
                     }
-                });
 
-                // If we found products, don't try other selectors
-                if (products.length > 0) break;
-            }
+                    // Price - multiple class names (verified from live DOM)
+                    const priceEl = card.querySelector('.hZ3P6w') ||
+                        card.querySelector('._30jeq3') ||
+                        card.querySelector('.Nx9376') ||
+                        card.querySelector('._1_WHN1');
+                    const priceText = priceEl?.textContent?.replace(/[₹,]/g, '') || '';
+                    const price = parseFloat(priceText);
+
+                    // Original price
+                    const originalPriceEl = card.querySelector('.y3H6nd') ||
+                        card.querySelector('._3I9_wc') ||
+                        card.querySelector('._3I9_ca');
+                    const originalPriceText = originalPriceEl?.textContent?.replace(/[₹,]/g, '') || '';
+                    const originalPrice = originalPriceText ? parseFloat(originalPriceText) : undefined;
+
+                    // Image - look for img tags
+                    const imgEl = (card.querySelector('img._396cs4') ||
+                        card.querySelector('img._2r_T1I') ||
+                        card.querySelector('img')) as HTMLImageElement | null;
+                    const image = imgEl?.src;
+
+                    // Rating (verified from live DOM)
+                    const ratingEl = card.querySelector('.XQD9m-') ||
+                        card.querySelector('._3LWZlK');
+                    const ratingText = ratingEl?.textContent;
+                    const rating = ratingText ? parseFloat(ratingText) : undefined;
+
+                    // Discount
+                    const discountEl = card.querySelector('.Uk_O9r') ||
+                        card.querySelector('._3Ay6Sb');
+                    const discount = discountEl?.textContent?.trim();
+
+                    if (title && price > 0 && url) {
+                        products.push({
+                            title,
+                            price,
+                            originalPrice,
+                            url,
+                            image,
+                            rating,
+                            discount,
+                        });
+                    }
+                } catch {
+                    // Skip malformed cards
+                }
+            });
 
             return products;
         });

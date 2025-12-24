@@ -63,7 +63,9 @@ export async function GET(request: NextRequest) {
     const scrapePromises = scrapers.map(async (scraper) => {
         const vendorStart = Date.now();
         try {
+            console.log(`[${scraper.vendor}] Starting scrape for query: "${query}"`);
             const results = await scraper.scrape(query!);
+            console.log(`[${scraper.vendor}] Success! Found ${results.length} products in ${Date.now() - vendorStart}ms`);
             timings.push({
                 vendor: scraper.vendor,
                 durationMs: Date.now() - vendorStart,
@@ -72,7 +74,10 @@ export async function GET(request: NextRequest) {
             return results;
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-            console.error(`[${scraper.vendor}] Scrape failed:`, errorMessage);
+            const stack = error instanceof Error ? error.stack : '';
+            console.error(`[${scraper.vendor}] FAILED after ${Date.now() - vendorStart}ms:`);
+            console.error(`[${scraper.vendor}] Error: ${errorMessage}`);
+            console.error(`[${scraper.vendor}] Stack: ${stack}`);
             errors.push({
                 vendor: scraper.vendor,
                 message: errorMessage,

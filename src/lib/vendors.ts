@@ -24,13 +24,10 @@ export const vendorInfo: Record<Vendor, { name: string; color: string }> = {
 
 /**
  * Default vendors to search when none specified
+ * Only includes vendors that are currently working
  */
 export const defaultVendors: Vendor[] = [
-    'amazon',
     'flipkart',
     'ebay',
-    'myntra',
-    'croma',
-    'ajio',
     'snapdeal',
 ];
