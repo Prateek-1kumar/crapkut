@@ -1,4 +1,4 @@
-import { Page } from 'playwright';
+import { Page } from 'puppeteer-core';
 import { BaseScraper } from './base';
 import type { ScrapeResult, Vendor } from '../types';
 

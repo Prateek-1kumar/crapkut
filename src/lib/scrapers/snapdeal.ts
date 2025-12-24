@@ -1,9 +1,9 @@
-import { Page } from 'playwright';
+import { Page } from 'puppeteer-core';
 import { BaseScraper } from './base';
 import type { ScrapeResult, Vendor } from '../types';
 
 /**
- * Snapdeal Scraper (Budget marketplace)
+ * Snapdeal Scraper - Updated for Puppeteer
  */
 export class SnapdealScraper extends BaseScraper {
     vendor: Vendor = 'snapdeal';
@@ -19,6 +19,12 @@ export class SnapdealScraper extends BaseScraper {
     }
 
     async parseProducts(page: Page): Promise<Partial<ScrapeResult>[]> {
+        try {
+            await page.waitForSelector('.product-tuple-listing', { timeout: 10000 });
+        } catch {
+            console.log('[snapdeal] No product cards found');
+        }
+
         return page.evaluate(() => {
             const products: Partial<{
                 title: string;
@@ -33,44 +39,31 @@ export class SnapdealScraper extends BaseScraper {
 
             cards.forEach((card) => {
                 try {
-                    // Title
                     const titleEl = card.querySelector('.product-title');
                     const title = titleEl?.textContent?.trim();
 
-                    // URL
-                    const linkEl = card.querySelector('.dp-widget-link') as HTMLAnchorElement;
-                    const url = linkEl?.href;
+                    const linkEl = card.querySelector('a.dp-widget-link') as HTMLAnchorElement;
+                    const url = linkEl?.href || '';
 
-                    // Price
                     const priceEl = card.querySelector('.lfloat.product-price');
-                    const priceText = priceEl?.textContent?.replace(/[₹Rs.,\s]/g, '') || '';
-                    const price = parseInt(priceText);
+                    const priceText = priceEl?.textContent?.replace(/[₹,Rs.]/g, '') || '';
+                    const price = parseFloat(priceText);
 
-                    // Original price
                     const originalPriceEl = card.querySelector('.lfloat.product-desc-price');
-                    const originalPriceText = originalPriceEl?.textContent?.replace(/[₹Rs.,\s]/g, '') || '';
-                    const originalPrice = originalPriceText ? parseInt(originalPriceText) : undefined;
+                    const originalPriceText = originalPriceEl?.textContent?.replace(/[₹,Rs.]/g, '') || '';
+                    const originalPrice = originalPriceText ? parseFloat(originalPriceText) : undefined;
 
-                    // Image
-                    const imgEl = card.querySelector('.product-image img') as HTMLImageElement;
-                    const image = imgEl?.src || imgEl?.getAttribute('data-src') || undefined;
+                    const imgEl = card.querySelector('.product-image') as HTMLImageElement;
+                    const image = imgEl?.src;
 
-                    // Discount
                     const discountEl = card.querySelector('.product-discount');
                     const discount = discountEl?.textContent?.trim();
 
                     if (title && price > 0 && url) {
-                        products.push({
-                            title,
-                            price,
-                            originalPrice,
-                            url,
-                            image,
-                            discount,
-                        });
+                        products.push({ title, price, originalPrice, url, image, discount });
                     }
                 } catch {
-                    // Skip malformed cards
+                    // Skip
                 }
             });
 

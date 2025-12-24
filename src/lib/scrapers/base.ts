@@ -1,4 +1,5 @@
-import { chromium, Browser, Page, BrowserContext } from 'playwright';
+import puppeteer, { Browser, Page } from 'puppeteer-core';
+import chromium from '@sparticuz/chromium';
 import { v4 as uuidv4 } from 'uuid';
 import type { ScrapeResult, Vendor } from '../types';
 
@@ -16,24 +17,22 @@ export interface ScraperStrategy {
 export interface BrowserConfig {
     headless?: boolean;
     timeout?: number;
-    blockResources?: boolean;
 }
 
 const DEFAULT_CONFIG: BrowserConfig = {
     headless: true,
-    timeout: 15000, // 15 seconds - faster failure feedback
-    blockResources: false, // Don't block images - we need product images
+    timeout: 15000,
 };
 
 /**
  * Abstract base class for all scrapers with common functionality
+ * Uses Puppeteer with @sparticuz/chromium for Vercel serverless compatibility
  */
 export abstract class BaseScraper implements ScraperStrategy {
     abstract vendor: Vendor;
     abstract baseUrl: string;
 
     protected browser: Browser | null = null;
-    protected context: BrowserContext | null = null;
     protected config: BrowserConfig;
 
     constructor(config: Partial<BrowserConfig> = {}) {
@@ -51,188 +50,91 @@ export abstract class BaseScraper implements ScraperStrategy {
     abstract buildSearchUrl(query: string): string;
 
     /**
-     * Parse product elements from the page
+     * Parse products from the page - to be implemented by each vendor
      */
     abstract parseProducts(page: Page): Promise<Partial<ScrapeResult>[]>;
 
     /**
-     * Launch browser with stealth settings
+     * Launch browser with serverless-compatible settings
      */
     protected async launchBrowser(): Promise<Browser> {
-        this.browser = await chromium.launch({
-            headless: this.config.headless,
-        });
+        if (!this.browser) {
+            const isServerless = process.env.AWS_LAMBDA_FUNCTION_VERSION || process.env.VERCEL;
+
+            this.browser = await puppeteer.launch({
+                args: isServerless
+                    ? chromium.args
+                    : ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+                defaultViewport: { width: 1366, height: 768 },
+                executablePath: isServerless
+                    ? await chromium.executablePath()
+                    : process.platform === 'darwin'
+                        ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+                        : '/usr/bin/google-chrome-stable',
+                headless: true,
+            });
+        }
         return this.browser;
     }
 
     /**
-     * Create a new context with stealth settings
-     */
-    protected async createContext(): Promise<BrowserContext> {
-        if (!this.browser) {
-            await this.launchBrowser();
-        }
-
-        this.context = await this.browser!.newContext({
-            userAgent: this.getRandomUserAgent(),
-            viewport: { width: 1920, height: 1080 },
-            locale: 'en-IN',
-            timezoneId: 'Asia/Kolkata',
-            extraHTTPHeaders: {
-                'Accept-Language': 'en-IN,en;q=0.9',
-                'Accept-Encoding': 'gzip, deflate, br',
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-            },
-        });
-
-        return this.context;
-    }
-
-    /**
-     * Create a new page with resource blocking
+     * Create a new page with stealth settings
      */
     protected async createPage(): Promise<Page> {
-        if (!this.context) {
-            await this.createContext();
-        }
+        const browser = await this.launchBrowser();
+        const page = await browser.newPage();
 
-        const page = await this.context!.newPage();
+        await page.setUserAgent(
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        );
 
-        // Block unnecessary resources for faster scraping
-        if (this.config.blockResources) {
-            await page.route('**/*', (route) => {
-                const resourceType = route.request().resourceType();
-                if (['image', 'stylesheet', 'font', 'media'].includes(resourceType)) {
-                    route.abort();
-                } else {
-                    route.continue();
-                }
-            });
-        }
+        await page.setExtraHTTPHeaders({
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        });
 
-        // Apply stealth scripts
-        await this.applyStealthScripts(page);
+        await page.evaluateOnNewDocument(() => {
+            Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
+            Object.defineProperty(navigator, 'plugins', { get: () => [1, 2, 3, 4, 5] });
+            Object.defineProperty(navigator, 'languages', { get: () => ['en-US', 'en'] });
+        });
 
         return page;
     }
 
-    /**
-     * Apply stealth mode scripts to evade bot detection
-     */
-    protected async applyStealthScripts(page: Page): Promise<void> {
-        await page.addInitScript(() => {
-            // Remove webdriver flag
-            Object.defineProperty(navigator, 'webdriver', {
-                get: () => undefined,
-            });
-
-            // Mock plugins
-            Object.defineProperty(navigator, 'plugins', {
-                get: () => [1, 2, 3, 4, 5],
-            });
-
-            // Mock languages
-            Object.defineProperty(navigator, 'languages', {
-                get: () => ['en-IN', 'en-US', 'en'],
-            });
-
-            // Mock permissions
-            const originalQuery = window.navigator.permissions.query;
-            window.navigator.permissions.query = (parameters: PermissionDescriptor) =>
-                parameters.name === 'notifications'
-                    ? Promise.resolve({ state: 'denied' } as PermissionStatus)
-                    : originalQuery(parameters);
-
-            // Mock chrome object
-            Object.defineProperty(window, 'chrome', {
-                writable: true,
-                enumerable: true,
-                configurable: false,
-                value: {
-                    runtime: {},
-                    loadTimes: function () { },
-                    csi: function () { },
-                    app: {},
-                },
-            });
-        });
-    }
-
-    /**
-     * Get a random user agent string
-     */
-    protected getRandomUserAgent(): string {
-        const userAgents = [
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15',
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0',
-        ];
-        return userAgents[Math.floor(Math.random() * userAgents.length)];
-    }
-
-    /**
-     * Generate a unique ID for each result
-     */
     protected generateId(): string {
         return uuidv4();
     }
 
-    /**
-     * Parse price string to number
-     */
     protected parsePrice(priceStr: string): number {
-        // Remove currency symbols and commas
-        const cleaned = priceStr.replace(/[₹$€£,\s]/g, '').trim();
-        const price = parseFloat(cleaned);
-        return isNaN(price) ? 0 : price;
+        if (!priceStr) return 0;
+        const cleaned = priceStr.replace(/[^0-9.]/g, '');
+        return parseFloat(cleaned) || 0;
     }
 
-    /**
-     * Clean and truncate product title
-     */
-    protected cleanTitle(title: string, maxLength = 150): string {
-        return title.trim().substring(0, maxLength);
+    protected cleanTitle(title: string): string {
+        return title.replace(/\s+/g, ' ').trim().substring(0, 200);
     }
 
-    /**
-     * Add delay to avoid detection
-     */
     protected async delay(ms: number): Promise<void> {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    /**
-     * Random delay between min and max ms
-     */
     protected async randomDelay(min = 500, max = 1500): Promise<void> {
-        const delay = Math.floor(Math.random() * (max - min + 1)) + min;
-        return this.delay(delay);
+        const delayMs = Math.floor(Math.random() * (max - min + 1)) + min;
+        return this.delay(delayMs);
     }
 
-    /**
-     * Close browser and cleanup
-     */
     async close(): Promise<void> {
-        if (this.context) {
-            await this.context.close();
-            this.context = null;
-        }
         if (this.browser) {
             await this.browser.close();
             this.browser = null;
         }
     }
 
-    /**
-     * Execute scrape with proper cleanup
-     */
     protected async executeScrape(query: string): Promise<ScrapeResult[]> {
-        let page: Page | null = null;
-
         try {
-            page = await this.createPage();
+            const page = await this.createPage();
             const searchUrl = this.buildSearchUrl(query);
 
             await page.goto(searchUrl, {
@@ -240,12 +142,10 @@ export abstract class BaseScraper implements ScraperStrategy {
                 timeout: this.config.timeout,
             });
 
-            // Wait a bit for dynamic content
             await this.randomDelay(1000, 2000);
 
             const rawProducts = await this.parseProducts(page);
 
-            // Transform to full ScrapeResult with validation
             const results: ScrapeResult[] = rawProducts
                 .filter(p => p.title && p.price && p.price > 0)
                 .map(p => ({
