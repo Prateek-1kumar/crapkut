@@ -52,6 +52,7 @@ export default function ProductTable({ products, isLoading = false }: ProductTab
                             <tr key={product.id || index}>
                                 <td>
                                     {product.image ? (
+                                        // eslint-disable-next-line @next/next/no-img-element
                                         <img
                                             src={product.image}
                                             alt=""

@@ -44,6 +44,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
             {/* Image */}
             <div className="relative aspect-square bg-[var(--color-bg-tertiary)] overflow-hidden">
                 {image ? (
+                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                         src={image}
                         alt={title}

@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { FiExternalLink, FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import { FiExternalLink } from 'react-icons/fi';
 import type { ScrapeResult } from '@/lib/types';
 import { groupSimilarProducts, ProductGroup } from '@/lib/comparison';
 import VendorBadge from './VendorBadge';

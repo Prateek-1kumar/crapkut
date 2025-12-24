@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -17,9 +18,9 @@ export default function RootLayout({
         {/* Header */}
         <header className="header">
           <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <a href="/" className="header-logo">
+            <Link href="/" className="header-logo">
               🔍 PriceHunt
-            </a>
+            </Link>
             <span style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)' }}>
               Price Comparison Tool
             </span>
