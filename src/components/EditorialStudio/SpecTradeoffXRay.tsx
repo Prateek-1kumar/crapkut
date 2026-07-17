@@ -18,16 +18,16 @@ export default function SpecTradeoffXRay({ matrix }: SpecTradeoffXRayProps) {
 
   return (
     <section className="my-10 animate-fade-in">
-      <div className="backdrop-blur-2xl bg-surface-elevated/75 dark:bg-surface-elevated/85 border border-black/[0.06] dark:border-white/10 rounded-3xl overflow-hidden shadow-[0_16px_50px_rgb(0,0,0,0.04)] dark:shadow-[0_20px_60px_rgb(0,0,0,0.35)] transition-all duration-500 hover:shadow-[0_20px_60px_rgb(0,0,0,0.06)] dark:hover:shadow-[0_24px_70px_rgb(0,0,0,0.45)] hover:border-black/15 dark:hover:border-white/20">
+      <div className="backdrop-blur-3xl bg-white/85 dark:bg-white/[0.04] border border-black/[0.07] dark:border-white/[0.08] rounded-3xl overflow-hidden shadow-sm transition-all duration-500 hover:border-black/15 dark:hover:border-white/15">
         {/* Header Toggle */}
         <button
           type="button"
           onClick={() => setIsExpanded(!isExpanded)}
-          className="w-full px-7 sm:px-9 py-6 flex items-center justify-between gap-5 text-left hover:bg-black/[0.02] dark:hover:bg-white/[0.03] transition-colors duration-300 cursor-pointer"
+          className="w-full px-6 sm:px-8 py-6 flex items-center justify-between gap-5 text-left hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors duration-300 cursor-pointer"
         >
           <div className="flex items-center gap-4">
-            <div className="p-3 rounded-2xl bg-white/80 dark:bg-white/[0.06] border border-black/[0.06] dark:border-white/10 shadow-2xs text-text-primary">
-              <FiLayers size={20} className="text-text-primary" />
+            <div className="p-3 rounded-2xl bg-black/[0.04] dark:bg-white/[0.06] border border-black/[0.06] dark:border-white/10 text-text-primary shrink-0">
+              <FiLayers size={18} />
             </div>
             <div>
               <h3 className="font-serif text-xl sm:text-2xl font-normal text-text-primary tracking-tight">
@@ -38,9 +38,9 @@ export default function SpecTradeoffXRay({ matrix }: SpecTradeoffXRayProps) {
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-black/[0.03] dark:bg-white/[0.06] border border-black/[0.05] dark:border-white/10 text-xs font-semibold text-text-primary hover:bg-black/[0.06] dark:hover:bg-white/[0.1] transition-colors">
-            <span>{isExpanded ? 'Hide X-Ray Matrix' : 'Expand X-Ray Matrix'}</span>
-            {isExpanded ? <FiChevronUp size={16} /> : <FiChevronDown size={16} />}
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-black/[0.04] dark:bg-white/[0.06] border border-black/[0.06] dark:border-white/10 text-xs font-semibold text-text-primary hover:bg-black/[0.08] dark:hover:bg-white/[0.12] transition-colors shrink-0">
+            <span>{isExpanded ? 'Hide X-Ray' : 'Expand X-Ray'}</span>
+            {isExpanded ? <FiChevronUp size={15} /> : <FiChevronDown size={15} />}
           </div>
         </button>
 
@@ -50,9 +50,9 @@ export default function SpecTradeoffXRay({ matrix }: SpecTradeoffXRayProps) {
             <table className="w-full border-collapse text-left text-sm">
               <thead>
                 <tr className="border-b border-black/[0.05] dark:border-white/[0.06] bg-black/[0.015] dark:bg-white/[0.02] text-xs font-semibold uppercase tracking-wider text-text-secondary">
-                  <th className="py-5 px-7 w-52 text-text-muted">Specification Attribute</th>
+                  <th className="py-5 px-6 sm:px-8 w-52 text-text-muted font-sans">Specification Attribute</th>
                   {topListings.map((row, idx) => (
-                    <th key={idx} className="py-5 px-7 min-w-[220px]">
+                    <th key={idx} className="py-5 px-6 sm:px-8 min-w-[220px]">
                       <div className="mb-2.5">
                         <StoreBrandBadge vendor={row.candidate.raw.vendor} size="sm" />
                       </div>
@@ -64,15 +64,15 @@ export default function SpecTradeoffXRay({ matrix }: SpecTradeoffXRayProps) {
                 </tr>
               </thead>
               <tbody className="divide-y divide-black/[0.04] dark:divide-white/[0.06]">
-                <tr className="hover:bg-black/[0.01] dark:hover:bg-white/[0.02] transition-colors">
-                  <td className="py-4 px-7 font-medium text-text-secondary">Parity Classification</td>
+                <tr className="hover:bg-black/[0.01] dark:hover:bg-white/[0.015] transition-colors">
+                  <td className="py-4 px-6 sm:px-8 font-medium text-text-secondary">Parity Classification</td>
                   {topListings.map((row, idx) => (
-                    <td key={idx} className="py-4 px-7">
+                    <td key={idx} className="py-4 px-6 sm:px-8">
                       <span
                         className={`inline-block px-3 py-1 rounded-full text-xs font-medium border ${
                           row.candidate.classification === 'exact_match'
-                            ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-900 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800'
-                            : 'bg-amber-50 dark:bg-amber-950/50 text-amber-900 dark:text-amber-300 border-amber-200 dark:border-amber-800'
+                            ? 'bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border-emerald-500/20'
+                            : 'bg-amber-500/10 text-amber-800 dark:text-amber-300 border-amber-500/20'
                         }`}
                       >
                         {row.candidate.classification.replace('_', ' ')}
@@ -81,24 +81,24 @@ export default function SpecTradeoffXRay({ matrix }: SpecTradeoffXRayProps) {
                   ))}
                 </tr>
 
-                <tr className="hover:bg-black/[0.01] dark:hover:bg-white/[0.02] transition-colors">
-                  <td className="py-4 px-7 font-medium text-text-secondary">Normalized Parity Score</td>
+                <tr className="hover:bg-black/[0.01] dark:hover:bg-white/[0.015] transition-colors">
+                  <td className="py-4 px-6 sm:px-8 font-medium text-text-secondary">Parity Score</td>
                   {topListings.map((row, idx) => (
-                    <td key={idx} className="py-4 px-7 font-mono font-medium text-text-primary">
-                      {row.similarity.finalScore}% Parity
+                    <td key={idx} className="py-4 px-6 sm:px-8 font-mono font-medium text-text-primary">
+                      {row.similarity.finalScore}% Match
                     </td>
                   ))}
                 </tr>
 
-                <tr className="hover:bg-black/[0.01] dark:hover:bg-white/[0.02] transition-colors">
-                  <td className="py-4 px-7 font-medium text-text-secondary">Listing Condition</td>
+                <tr className="hover:bg-black/[0.01] dark:hover:bg-white/[0.015] transition-colors">
+                  <td className="py-4 px-6 sm:px-8 font-medium text-text-secondary">Listing Condition</td>
                   {topListings.map((row, idx) => (
-                    <td key={idx} className="py-4 px-7">
+                    <td key={idx} className="py-4 px-6 sm:px-8">
                       <span
                         className={`capitalize font-semibold ${
                           row.candidate.specs.condition === 'new'
                             ? 'text-text-primary'
-                            : 'text-amber-800 dark:text-amber-400'
+                            : 'text-amber-600 dark:text-amber-400 font-medium'
                         }`}
                       >
                         {row.candidate.specs.condition.replace('_', ' ')}
@@ -107,52 +107,61 @@ export default function SpecTradeoffXRay({ matrix }: SpecTradeoffXRayProps) {
                   ))}
                 </tr>
 
-                <tr className="hover:bg-black/[0.01] dark:hover:bg-white/[0.02] transition-colors">
-                  <td className="py-4 px-7 font-medium text-text-secondary">Manufacturer Warranty</td>
+                <tr className="hover:bg-black/[0.01] dark:hover:bg-white/[0.015] transition-colors">
+                  <td className="py-4 px-6 sm:px-8 font-medium text-text-secondary">Manufacturer Warranty</td>
                   {topListings.map((row, idx) => (
-                    <td key={idx} className="py-4 px-7">
-                      {row.candidate.specs.warrantyIncluded ? (
-                        <span className="text-emerald-800 dark:text-emerald-400 font-semibold flex items-center gap-1.5">
-                          <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
-                          Included / Verified
+                    <td key={idx} className="py-4 px-6 sm:px-8">
+                      <span
+                        className={`font-semibold ${
+                          row.candidate.specs.warrantyIncluded
+                            ? 'text-emerald-700 dark:text-emerald-400'
+                            : 'text-amber-600 dark:text-amber-400'
+                        }`}
+                      >
+                        {row.candidate.specs.warrantyIncluded ? 'Yes — Verified' : 'No / Seller Only'}
+                      </span>
+                    </td>
+                  ))}
+                </tr>
+
+                <tr className="hover:bg-black/[0.01] dark:hover:bg-white/[0.015] transition-colors">
+                  <td className="py-4 px-6 sm:px-8 font-medium text-text-secondary">Colorway</td>
+                  {topListings.map((row, idx) => (
+                    <td key={idx} className="py-4 px-6 sm:px-8 text-text-primary">
+                      {row.candidate.specs.color || <span className="text-text-muted italic">Unspecified</span>}
+                    </td>
+                  ))}
+                </tr>
+
+                <tr className="hover:bg-black/[0.01] dark:hover:bg-white/[0.015] transition-colors">
+                  <td className="py-4 px-6 sm:px-8 font-medium text-text-secondary">Size / Variant</td>
+                  {topListings.map((row, idx) => (
+                    <td key={idx} className="py-4 px-6 sm:px-8 font-mono text-text-primary">
+                      {row.candidate.specs.storageOrSize || <span className="text-text-muted italic">Base</span>}
+                    </td>
+                  ))}
+                </tr>
+
+                <tr className="hover:bg-black/[0.01] dark:hover:bg-white/[0.015] transition-colors">
+                  <td className="py-4 px-6 sm:px-8 font-medium text-text-secondary">Specification Gaps</td>
+                  {topListings.map((row, idx) => (
+                    <td key={idx} className="py-4 px-6 sm:px-8">
+                      {row.gaps.specTradeoffs.length === 0 ? (
+                        <span className="text-emerald-700 dark:text-emerald-400 font-medium text-xs">
+                          ✓ 100% Exact Match
                         </span>
                       ) : (
-                        <span className="text-amber-800 dark:text-amber-400 font-semibold flex items-center gap-1.5">
-                          <span className="w-2 h-2 rounded-full bg-amber-500 inline-block" />
-                          Unverified / Seller Only
-                        </span>
+                        <ul className="space-y-1">
+                          {row.gaps.specTradeoffs.map((gap, gIdx) => (
+                            <li
+                              key={gIdx}
+                              className="text-xs text-amber-800 dark:text-amber-300 bg-amber-500/10 px-2.5 py-1 rounded-md border border-amber-500/20 w-fit"
+                            >
+                              <strong>{gap.attribute}:</strong> {String(gap.candidateValue)}
+                            </li>
+                          ))}
+                        </ul>
                       )}
-                    </td>
-                  ))}
-                </tr>
-
-                <tr className="hover:bg-black/[0.01] dark:hover:bg-white/[0.02] transition-colors">
-                  <td className="py-4 px-7 font-medium text-text-secondary">Brand & Colorway</td>
-                  {topListings.map((row, idx) => (
-                    <td key={idx} className="py-4 px-7 text-text-primary font-medium">
-                      {row.candidate.specs.brand} — {row.candidate.specs.color || 'Standard'}
-                    </td>
-                  ))}
-                </tr>
-
-                <tr className="hover:bg-black/[0.01] dark:hover:bg-white/[0.02] transition-colors">
-                  <td className="py-4 px-7 font-medium text-text-secondary">Variant / Fit / Size</td>
-                  {topListings.map((row, idx) => (
-                    <td key={idx} className="py-4 px-7 text-text-primary font-medium">
-                      {row.candidate.specs.storageOrSize || 'N/A'}
-                    </td>
-                  ))}
-                </tr>
-
-                <tr className="hover:bg-black/[0.01] dark:hover:bg-white/[0.02] transition-colors">
-                  <td className="py-4 px-7 font-medium text-text-secondary">Specification Tradeoffs</td>
-                  {topListings.map((row, idx) => (
-                    <td key={idx} className="py-4 px-7 text-xs text-text-secondary leading-relaxed">
-                      {row.gaps.specTradeoffs.length > 0
-                        ? row.gaps.specTradeoffs
-                            .map((t) => `${t.attribute}: ${t.candidateValue}`)
-                            .join('; ')
-                        : 'Exact target specification match'}
                     </td>
                   ))}
                 </tr>
