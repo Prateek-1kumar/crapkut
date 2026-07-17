@@ -29,7 +29,7 @@ export default function Home() {
       }, 1200);
 
       const timer2 = setTimeout(() => {
-        setStatusMessage('Step 3/3: Groq LLM normalizing spec parity & filtering accessory spam...');
+        setStatusMessage('Step 3/3: Neural verification engine normalizing spec parity & filtering accessory spam...');
       }, 2600);
 
       const response = await fetch('/api/compare', {
@@ -151,15 +151,15 @@ export default function Home() {
       </div>
 
       {/* Architectural Studio Footer */}
-      <footer className="border-t border-border-subtle bg-surface/50 py-6 px-6 sm:px-12 mt-auto shrink-0">
-        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-text-muted">
+      <footer className="border-t border-black/[0.06] dark:border-white/10 bg-surface/50 dark:bg-surface/30 backdrop-blur-md py-6 px-6 sm:px-12 mt-auto shrink-0 transition-colors duration-500 z-20 relative">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-text-muted">
           <div className="flex items-center gap-2 font-serif text-sm text-text-primary">
             <span>Price Intelligence Dossier</span>
             <span>•</span>
             <span className="font-sans font-normal text-text-secondary">Universal Parity Studio</span>
           </div>
           <div>
-            Powered by Universal Link Discovery & Groq LLM Parity Verification
+            Powered by Universal Link Discovery & Neural Parity Verification
           </div>
         </div>
       </footer>

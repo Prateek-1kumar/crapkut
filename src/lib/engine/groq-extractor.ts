@@ -144,7 +144,7 @@ Return exactly valid JSON matching:
                 warrantyIncluded: evalItem.specs?.warrantyIncluded ?? true,
                 keyFeatures: evalItem.specs?.keyFeatures || {},
               },
-              classificationReason: evalItem.reason || 'Verified via Groq LLM',
+              classificationReason: evalItem.reason || 'Verified via Neural Specification Engine',
             };
 
             if (

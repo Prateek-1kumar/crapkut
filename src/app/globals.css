@@ -88,3 +88,11 @@ body {
 .animate-bottom-fill {
   animation: slideUpFill 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+/* Disable transitions during theme spill animation so elements snap instantly behind the overlay */
+html.theme-transitioning,
+html.theme-transitioning *,
+html.theme-transitioning *::before,
+html.theme-transitioning *::after {
+  transition-duration: 0s !important;
+}

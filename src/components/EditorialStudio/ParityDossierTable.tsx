@@ -30,7 +30,7 @@ export default function ParityDossierTable({ matrix, bestDealId }: ParityDossier
             Marketplace Valuation & Parity Matrix
           </h2>
           <p className="text-xs sm:text-sm text-text-secondary mt-1 font-normal">
-            All listings evaluated, categorized, and normalized for specification deviations by Groq AI.
+            All listings evaluated, categorized, and normalized for specification deviations by our Autonomous Parity Engine.
           </p>
         </div>
         <div className="text-xs text-text-muted font-mono hidden sm:block tracking-widest uppercase">
