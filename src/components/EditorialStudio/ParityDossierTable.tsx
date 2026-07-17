@@ -58,52 +58,52 @@ export default function ParityDossierTable({ matrix, bestDealId }: ParityDossier
               }`}
             >
               {/* Left Column: Authentic Brand Badge & Listing Identity */}
-              <div className="flex-1 max-w-2xl flex flex-col gap-3">
+              <div className="flex-1 max-w-2xl flex flex-col gap-2.5">
                 <div className="flex flex-wrap items-center gap-2">
                   <StoreBrandBadge vendor={vendor} size="sm" />
 
                   {isBest && (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-900 border border-emerald-300 shadow-xs tracking-tight">
-                      <FiCheck className="text-emerald-600" size={13} />
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-900 border border-emerald-300 shadow-2xs tracking-tight">
+                      <FiCheck className="text-emerald-600" size={12} />
                       #1 Lowest Verified Market Price
                     </span>
                   )}
 
                   {isExact && !isBest && (
-                    <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-black/[0.04] text-text-secondary border border-black/[0.06]">
+                    <span className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-black/[0.04] text-text-secondary border border-black/[0.06]">
                       100% Spec Parity
                     </span>
                   )}
                   {isVariant && (
-                    <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-800 border border-amber-200/60">
+                    <span className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-amber-50 text-amber-800 border border-amber-200/60">
                       Variant Deal ({row.similarity.finalScore}%)
                     </span>
                   )}
                   {isTradeoff && (
-                    <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-800 border border-amber-200/60 flex items-center gap-1">
-                      <FiAlertCircle size={12} className="text-amber-600" />
+                    <span className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-amber-50 text-amber-800 border border-amber-200/60 flex items-center gap-1">
+                      <FiAlertCircle size={11} className="text-amber-600" />
                       Condition Tradeoff ({row.similarity.finalScore}%)
                     </span>
                   )}
                 </div>
 
-                <h3 className="text-base sm:text-lg font-medium text-text-primary/95 leading-snug tracking-tight font-sans">
+                <h3 className="text-sm sm:text-base font-medium text-text-primary/95 leading-snug tracking-tight font-sans">
                   {row.candidate.normalizedTitle}
                 </h3>
 
                 {/* Tradeoffs / Specs Row */}
-                <div className="flex flex-wrap items-center gap-2 pt-0.5 text-xs text-text-secondary">
+                <div className="flex flex-wrap items-center gap-1.5 pt-0.5 text-[11px] text-text-secondary">
                   <span className="font-medium text-text-muted">Verified Specs:</span>
-                  <span className="px-2.5 py-0.5 rounded-full bg-black/[0.03] border border-black/[0.05] text-text-primary">
+                  <span className="px-2 py-0.5 rounded-full bg-black/[0.03] border border-black/[0.05] text-text-primary">
                     Condition: <strong className="capitalize font-semibold">{row.candidate.specs.condition.replace('_', ' ')}</strong>
                   </span>
                   {row.candidate.specs.color && (
-                    <span className="px-2.5 py-0.5 rounded-full bg-black/[0.03] border border-black/[0.05] text-text-primary">
+                    <span className="px-2 py-0.5 rounded-full bg-black/[0.03] border border-black/[0.05] text-text-primary">
                       Color: <strong className="font-semibold">{row.candidate.specs.color}</strong>
                     </span>
                   )}
                   {row.candidate.specs.storageOrSize && (
-                    <span className="px-2.5 py-0.5 rounded-full bg-black/[0.03] border border-black/[0.05] text-text-primary">
+                    <span className="px-2 py-0.5 rounded-full bg-black/[0.03] border border-black/[0.05] text-text-primary">
                       Variant: <strong className="font-semibold">{row.candidate.specs.storageOrSize}</strong>
                     </span>
                   )}
@@ -111,9 +111,9 @@ export default function ParityDossierTable({ matrix, bestDealId }: ParityDossier
                   {row.gaps.specTradeoffs.map((gap, gIdx) => (
                     <span
                       key={gIdx}
-                      className="px-2.5 py-0.5 rounded-full bg-amber-50/80 text-amber-800 border border-amber-200/50 font-medium flex items-center gap-1"
+                      className="px-2 py-0.5 rounded-full bg-amber-50/80 text-amber-800 border border-amber-200/50 font-medium flex items-center gap-1"
                     >
-                      <FiTag size={11} className="text-amber-600" />
+                      <FiTag size={10} className="text-amber-600" />
                       {gap.attribute}: {String(gap.candidateValue)} vs {String(gap.baselineValue)}
                     </span>
                   ))}
@@ -121,15 +121,15 @@ export default function ParityDossierTable({ matrix, bestDealId }: ParityDossier
               </div>
 
               {/* Right Column: Architectural Valuation & Tactile Action Pill */}
-              <div className="w-full lg:w-auto flex flex-row lg:flex-col items-center lg:items-end justify-between lg:justify-center gap-4 border-t lg:border-t-0 pt-3.5 lg:pt-0 border-black/[0.06]">
+              <div className="w-full lg:w-auto flex flex-row lg:flex-col items-center lg:items-end justify-between lg:justify-center gap-3 border-t lg:border-t-0 pt-3 lg:pt-0 border-black/[0.06]">
                 <div className="text-left lg:text-right">
-                  <div className="flex items-baseline gap-1.5 justify-start lg:justify-end">
-                    <span className="font-serif text-2xl sm:text-3xl font-normal text-text-primary tracking-tight">
+                  <div className="flex items-baseline gap-1 justify-start lg:justify-end">
+                    <span className="font-serif text-xl sm:text-2xl font-normal text-text-primary tracking-tight">
                       ₹{row.candidate.normalizedPrice.toLocaleString('en-IN')}
                     </span>
                   </div>
                   {row.candidate.raw.rawOriginalPrice && (
-                    <span className="text-xs text-text-muted line-through block mt-0.5">
+                    <span className="text-[11px] text-text-muted line-through block mt-0.5">
                       MRP ₹{row.candidate.raw.rawOriginalPrice.toLocaleString('en-IN')}
                     </span>
                   )}

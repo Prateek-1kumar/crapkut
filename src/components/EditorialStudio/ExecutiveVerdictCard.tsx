@@ -58,20 +58,20 @@ export default function ExecutiveVerdictCard({ report }: ExecutiveVerdictCardPro
         </div>
 
         {/* Main Executive Body - Balanced, Compact & Sleek */}
-        <div className="p-6 sm:p-8 flex flex-col lg:flex-row gap-8 lg:items-center justify-between">
+        <div className="p-5 sm:p-6 flex flex-col lg:flex-row gap-6 lg:items-center justify-between">
           {/* Left: AI Recommendation Analysis (Refined, Modern Font Size) */}
-          <div className="flex-1 max-w-3xl flex flex-col gap-3">
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-text-primary/70">
-              <FiShield size={14} className="text-amber-600 shrink-0" />
+          <div className="flex-1 max-w-3xl flex flex-col gap-2.5">
+            <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-widest text-text-primary/70">
+              <FiShield size={13} className="text-amber-600 shrink-0" />
               <span>Executive Buying Recommendation</span>
             </div>
             
-            <p className="font-sans text-sm sm:text-base leading-relaxed text-text-primary/95 font-normal">
+            <p className="font-sans text-xs sm:text-sm leading-relaxed text-text-primary/95 font-normal">
               {groqExecutiveVerdict}
             </p>
 
             {bestDeal.candidate.classificationReason && (
-              <div className="text-xs sm:text-sm text-text-secondary border-l-2 border-black/15 pl-3.5 mt-1 leading-relaxed">
+              <div className="text-[11px] sm:text-xs text-text-secondary border-l-2 border-black/15 pl-3 mt-0.5 leading-relaxed">
                 <span className="font-semibold text-text-primary">Parity Verification:</span>{' '}
                 {bestDeal.candidate.classificationReason}
               </div>
@@ -79,13 +79,13 @@ export default function ExecutiveVerdictCard({ report }: ExecutiveVerdictCardPro
           </div>
 
           {/* Right: Architectural Price Valuation Box */}
-          <div className="backdrop-blur-md bg-white/70 rounded-2xl border border-black/[0.06] p-6 min-w-[280px] flex flex-col gap-3.5 shadow-xs shrink-0">
+          <div className="backdrop-blur-md bg-white/70 rounded-2xl border border-black/[0.06] p-5 min-w-[260px] flex flex-col gap-3 shadow-xs shrink-0">
             <div>
-              <span className="text-xs font-semibold text-text-muted uppercase tracking-wider block">
+              <span className="text-[11px] font-semibold text-text-muted uppercase tracking-wider block">
                 Lowest Verified Valuation
               </span>
-              <div className="flex flex-wrap items-center gap-3 mt-1.5">
-                <span className="font-serif text-3xl sm:text-4xl font-normal text-text-primary tracking-tight">
+              <div className="flex flex-wrap items-center gap-2.5 mt-1">
+                <span className="font-serif text-2xl sm:text-3xl font-normal text-text-primary tracking-tight">
                   ₹{bestDeal.candidate.normalizedPrice.toLocaleString('en-IN')}
                 </span>
                 <StoreBrandBadge vendor={bestDeal.candidate.raw.vendor} size="sm" />
