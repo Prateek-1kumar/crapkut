@@ -214,8 +214,8 @@ export default function IntelligenceHeader({
   // COMPACT STICKY TOP COMMAND BAR (isCompact === true)
   // ==========================================
   return (
-    <header className="w-full border-b border-black/[0.06] dark:border-white/[0.08] bg-surface-elevated/90 backdrop-blur-2xl py-2.5 px-6 sm:px-12 sticky top-0 z-40 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] shadow-2xs">
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-2.5">
+    <header className="w-full border-b border-black/[0.06] dark:border-white/[0.08] bg-surface-elevated/90 backdrop-blur-2xl py-2.5 px-4 sm:px-8 md:px-10 sticky top-0 z-40 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] shadow-2xs">
+      <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row md:items-center justify-between gap-2.5">
         {/* Compact Editorial Brand Title */}
         <div className="flex items-baseline gap-2 shrink-0">
           <h1 className="font-serif text-lg sm:text-xl font-normal tracking-tight text-text-primary">

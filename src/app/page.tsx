@@ -95,7 +95,7 @@ export default function Home() {
           isCompact={hasActiveState}
         />
 
-        <div className="max-w-5xl mx-auto px-6 sm:px-12 pb-16 w-full">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-8 md:px-10 pb-16 w-full">
           {/* Error Banner */}
           {errorMessage && (
             <div className="my-8 p-6 sm:p-8 rounded-3xl backdrop-blur-xl bg-amber-50/90 border border-amber-200/80 text-amber-900 flex items-start gap-4 shadow-sm animate-fade-in">
@@ -116,10 +116,10 @@ export default function Home() {
 
           {/* Active Dossier State */}
           {report && !isLoading && (
-            <div className="animate-fade-in mt-6">
-              <div className="flex flex-wrap items-center justify-between pb-4 border-b border-black/[0.06] text-xs text-text-secondary gap-3">
+            <div className="animate-fade-in mt-4 sm:mt-6">
+              <div className="flex flex-wrap items-center justify-between pb-3.5 border-b border-black/[0.06] dark:border-white/10 text-xs text-text-secondary gap-3">
                 <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block shrink-0" />
                   <span>
                     Showing verified parity dossier for: <strong className="text-text-primary font-semibold text-sm">&ldquo;{report.targetInput}&rdquo;</strong>
                   </span>
@@ -127,7 +127,7 @@ export default function Home() {
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/70 hover:bg-white border border-black/10 text-text-primary font-medium transition-all duration-300 cursor-pointer shadow-2xs"
+                  className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/70 dark:bg-white/[0.06] hover:bg-white dark:hover:bg-white/[0.12] border border-black/10 dark:border-white/12 text-text-primary font-medium transition-all duration-300 cursor-pointer shadow-2xs"
                 >
                   <FiRefreshCw size={13} className="text-text-secondary" />
                   <span>New Research Dossier</span>
@@ -151,8 +151,8 @@ export default function Home() {
       </div>
 
       {/* Architectural Studio Footer */}
-      <footer className="border-t border-black/[0.06] dark:border-white/10 bg-surface/50 dark:bg-surface/30 backdrop-blur-md py-6 px-6 sm:px-12 mt-auto shrink-0 transition-colors duration-500 z-20 relative">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-text-muted">
+      <footer className="border-t border-black/[0.06] dark:border-white/10 bg-surface/50 dark:bg-surface/30 backdrop-blur-md py-6 px-4 sm:px-8 md:px-10 mt-auto shrink-0 transition-colors duration-500 z-20 relative">
+        <div className="max-w-[1440px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-text-muted">
           <div className="flex items-center gap-2 font-serif text-sm text-text-primary">
             <span>Price Intelligence Dossier</span>
             <span>•</span>
