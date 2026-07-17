@@ -94,9 +94,25 @@ Return exactly valid JSON matching:
       const rawJson = response.choices[0]?.message?.content;
       if (rawJson) {
         const parsed = JSON.parse(rawJson);
-        const evalsMap = new Map<string, any>();
+        interface GroqEvalItem {
+          id: string;
+          classification: ParityClassification;
+          confidenceScore?: number;
+          normalizedTitle?: string;
+          specs?: {
+            brand?: string;
+            modelNumber?: string | null;
+            color?: string | null;
+            storageOrSize?: string | null;
+            condition?: 'new' | 'refurbished' | 'open_box' | 'unknown';
+            warrantyIncluded?: boolean | null;
+            keyFeatures?: Record<string, string | number | boolean>;
+          };
+          reason?: string;
+        }
+        const evalsMap = new Map<string, GroqEvalItem>();
         if (Array.isArray(parsed.evaluations)) {
-          parsed.evaluations.forEach((item: any) => evalsMap.set(item.id, item));
+          parsed.evaluations.forEach((item: GroqEvalItem) => evalsMap.set(item.id, item));
         }
 
         for (const raw of chunk) {

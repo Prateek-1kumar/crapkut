@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
         {
           success: false,
           error: 'Validation error',
-          details: error.issues || (error as any).errors,
+          details: error.issues || (error as unknown as { errors?: unknown[] }).errors,
         },
         { status: 400 }
       );

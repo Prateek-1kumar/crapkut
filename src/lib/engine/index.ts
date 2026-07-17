@@ -5,7 +5,6 @@ import { routeInput } from './router';
 import { scoreSimilarityAndGaps } from './similarity';
 import {
   CompareRequestSchema,
-  type CompareRequest,
   type ExecutiveComparisonReport,
 } from './types';
 
