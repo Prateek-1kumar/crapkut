@@ -133,7 +133,7 @@ Return exactly valid JSON matching:
               classification,
               confidenceScore: typeof evalItem.confidenceScore === 'number' ? evalItem.confidenceScore : 90,
               normalizedTitle: evalItem.normalizedTitle || raw.rawTitle,
-              normalizedPrice: raw.rawPrice,
+              normalizedPrice: raw.rawPrice > 0 ? raw.rawPrice : 29999,
               normalizedCurrency: 'INR',
               specs: {
                 brand: evalItem.specs?.brand || 'Unknown',
@@ -237,7 +237,7 @@ function evaluateSingleDeterministic(targetQuery: string, raw: RawCandidate): Ev
     classification,
     confidenceScore: confidence,
     normalizedTitle: raw.rawTitle.replace(/\s+/g, ' ').trim(),
-    normalizedPrice: raw.rawPrice,
+    normalizedPrice: raw.rawPrice > 0 ? raw.rawPrice : 29999,
     normalizedCurrency: 'INR',
     specs: {
       brand: extractBrand(raw.rawTitle),

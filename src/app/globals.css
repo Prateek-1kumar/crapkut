@@ -1,15 +1,34 @@
+@import url('https://fonts.googleapis.com/css2?family=Frances:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #0f172a;
+@theme {
+  --color-canvas: #faf8f5;
+  --color-surface: #f4f0ea;
+  --color-surface-elevated: #ffffff;
+  --color-border-subtle: #e8e3dc;
+  --color-border-strong: #d1c9be;
+  
+  --color-text-primary: #18181a;
+  --color-text-secondary: #5c5a56;
+  --color-text-muted: #8e8a84;
+  
+  --color-accent: #2e4036;
+  --color-accent-soft: #e6e9e7;
+  
+  --color-success: #235338;
+  --color-success-bg: #eaf2ed;
+  
+  --color-warning: #8c4f2b;
+  --color-warning-bg: #f7efeb;
+
+  --font-serif: 'Frances', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: var(--color-canvas);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
   margin: 0;
   padding: 0;
-  -webkit-font-smoothing: antialiased;
 }

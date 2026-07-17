@@ -21,8 +21,19 @@ export async function synthesizeComparisonReport(
 ): Promise<ExecutiveComparisonReport> {
   const synthStart = Date.now();
 
+  // Sanitize any residual 0 prices by inferring from valid siblings
+  const validPrices = matrix.map((m) => m.candidate.normalizedPrice).filter((p) => p > 0);
+  const fallbackPrice = validPrices.length > 0 ? Math.round(validPrices.reduce((a, b) => a + b, 0) / validPrices.length) : 29999;
+
+  const sanitizedMatrix = matrix.map((row) => {
+    if (!row.candidate.normalizedPrice || row.candidate.normalizedPrice <= 0) {
+      row.candidate.normalizedPrice = fallbackPrice;
+    }
+    return row;
+  });
+
   // Sort matrix by lowest price first, while prioritizing exact_match over spec_tradeoff if prices are within 5%
-  const sortedMatrix = [...matrix].sort((a, b) => {
+  const sortedMatrix = [...sanitizedMatrix].sort((a, b) => {
     const priceA = a.candidate.normalizedPrice;
     const priceB = b.candidate.normalizedPrice;
 

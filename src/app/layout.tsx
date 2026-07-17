@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Aonex Price Intelligence Engine',
-  description: 'Next-generation price comparison and competitor analysis platform.',
+  title: 'Price Intelligence Dossier | Editorial Comparison Studio',
+  description: 'Next-generation universal price comparison and specification parity dossier.',
 };
 
 export default function RootLayout({
@@ -13,7 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-white text-slate-900 antialiased selection:bg-blue-600 selection:text-white">
+      <body className="min-h-screen bg-canvas text-text-primary antialiased selection:bg-accent selection:text-white">
         {children}
       </body>
     </html>
