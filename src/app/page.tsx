@@ -96,16 +96,16 @@ export default function Home() {
         <div className="max-w-5xl mx-auto px-6 sm:px-12 pb-16 w-full">
           {/* Error Banner */}
           {errorMessage && (
-            <div className="my-8 p-6 rounded-2xl bg-warning-bg border border-warning/30 text-warning flex items-start gap-4">
-              <FiAlertTriangle className="shrink-0 mt-0.5" size={20} />
+            <div className="my-8 p-6 sm:p-8 rounded-3xl backdrop-blur-xl bg-amber-50/90 border border-amber-200/80 text-amber-900 flex items-start gap-4 shadow-sm animate-fade-in">
+              <FiAlertTriangle className="shrink-0 mt-0.5 text-amber-600" size={22} />
               <div className="flex-1">
-                <h3 className="font-serif text-lg font-medium">Evaluation Interrupted</h3>
-                <p className="text-sm mt-1">{errorMessage}</p>
+                <h3 className="font-serif text-xl font-normal">Evaluation Interrupted</h3>
+                <p className="text-sm mt-1 leading-relaxed">{errorMessage}</p>
               </div>
               <button
                 type="button"
                 onClick={handleReset}
-                className="px-4 py-1.5 rounded-lg bg-warning text-surface-elevated text-xs font-semibold hover:opacity-90 transition-opacity cursor-pointer"
+                className="px-5 py-2 rounded-full bg-amber-900 text-[#F9F8F6] text-xs font-semibold hover:bg-black transition-all duration-300 cursor-pointer shadow-2xs"
               >
                 Reset
               </button>
@@ -114,18 +114,21 @@ export default function Home() {
 
           {/* Active Dossier State */}
           {report && !isLoading && (
-            <div className="animate-fade-in mt-4">
-              <div className="flex items-center justify-between pb-3 border-b border-border-subtle text-xs text-text-secondary">
-                <span>
-                  Showing verified parity dossier for: <strong className="text-text-primary">&ldquo;{report.targetInput}&rdquo;</strong>
-                </span>
+            <div className="animate-fade-in mt-6">
+              <div className="flex flex-wrap items-center justify-between pb-4 border-b border-black/[0.06] text-xs text-text-secondary gap-3">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
+                  <span>
+                    Showing verified parity dossier for: <strong className="text-text-primary font-semibold text-sm">&ldquo;{report.targetInput}&rdquo;</strong>
+                  </span>
+                </div>
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="flex items-center gap-1.5 text-text-primary hover:text-accent font-medium transition-colors cursor-pointer"
+                  className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/70 hover:bg-white border border-black/10 text-text-primary font-medium transition-all duration-300 cursor-pointer shadow-2xs"
                 >
-                  <FiRefreshCw size={12} />
-                  New Research Dossier
+                  <FiRefreshCw size={13} className="text-text-secondary" />
+                  <span>New Research Dossier</span>
                 </button>
               </div>
 

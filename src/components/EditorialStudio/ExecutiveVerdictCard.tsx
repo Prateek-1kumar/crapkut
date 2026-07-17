@@ -1,6 +1,7 @@
 'use client';
 
 import type { ExecutiveComparisonReport } from '@/lib/engine/types';
+import StoreBrandBadge from './StoreBrandBadge';
 import { FiCheckCircle, FiTrendingDown, FiShield } from 'react-icons/fi';
 
 interface ExecutiveVerdictCardProps {
@@ -13,9 +14,9 @@ export default function ExecutiveVerdictCard({ report }: ExecutiveVerdictCardPro
 
   if (!bestDeal) {
     return (
-      <div className="bg-surface-elevated border border-border-subtle rounded-2xl p-8 my-6 shadow-xs">
-        <h3 className="font-serif text-xl text-text-primary mb-2">Dossier Note</h3>
-        <p className="text-text-secondary text-sm">
+      <div className="backdrop-blur-xl bg-surface-elevated/80 border border-black/[0.06] rounded-3xl p-6 sm:p-8 my-6 shadow-xs animate-fade-in">
+        <h3 className="font-serif text-xl text-text-primary mb-2 font-normal">Dossier Note</h3>
+        <p className="text-text-secondary text-sm sm:text-base leading-relaxed">
           {groqExecutiveVerdict ||
             `No verified retail candidates matched exactly for "${targetInput}". Try refining the product name or using auto mode.`}
         </p>
@@ -34,80 +35,78 @@ export default function ExecutiveVerdictCard({ report }: ExecutiveVerdictCardPro
       : 0;
 
   return (
-    <section className="my-8">
-      <div className="bg-surface-elevated border border-border-subtle rounded-2xl overflow-hidden shadow-xs transition-all hover:border-border-strong">
+    <section className="my-6 animate-fade-in">
+      <div className="backdrop-blur-2xl bg-surface-elevated/80 border border-black/[0.06] rounded-3xl overflow-hidden shadow-[0_16px_50px_rgb(0,0,0,0.04)] transition-all duration-500 hover:shadow-[0_20px_60px_rgb(0,0,0,0.06)] hover:border-black/15">
         {/* Top Architectural Metadata Strip */}
-        <div className="bg-surface border-b border-border-subtle px-6 py-3.5 flex flex-wrap items-center justify-between gap-4 text-xs font-medium text-text-secondary">
+        <div className="bg-black/[0.02] border-b border-black/[0.05] px-6 sm:px-8 py-3.5 flex flex-wrap items-center justify-between gap-3 text-xs font-medium text-text-secondary">
           <div className="flex items-center gap-2">
-            <FiCheckCircle className="text-success" size={15} />
+            <FiCheckCircle className="text-emerald-600 shrink-0" size={15} />
             <span>
               Verified Parity Matrix —{' '}
-              <strong className="text-text-primary">{totalVerifiedMatches} listings analyzed</strong>
+              <strong className="text-text-primary font-semibold">{totalVerifiedMatches} store listings analyzed</strong>
             </span>
           </div>
-          <div className="flex items-center gap-4 text-text-muted">
+          <div className="flex items-center gap-3 text-text-muted">
             <span>
-              Category: <strong className="text-text-primary uppercase">{report.routedPlan.category}</strong>
+              Category: <strong className="text-text-primary uppercase tracking-wider">{report.routedPlan.category}</strong>
             </span>
             <span>•</span>
-            <span className="font-mono">
+            <span className="font-mono text-text-secondary">
               Engine Time: {(report.executionTimingMs.total / 1000).toFixed(2)}s
             </span>
           </div>
         </div>
 
-        {/* Main Editorial Body */}
-        <div className="p-6 sm:p-10 flex flex-col lg:flex-row gap-8 lg:items-center justify-between">
-          {/* Left: Target Query & AI Recommendation Quote */}
-          <div className="flex-1 max-w-3xl flex flex-col gap-4">
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-accent">
-              <FiShield size={14} />
+        {/* Main Executive Body - Balanced, Compact & Sleek */}
+        <div className="p-6 sm:p-8 flex flex-col lg:flex-row gap-8 lg:items-center justify-between">
+          {/* Left: AI Recommendation Analysis (Refined, Modern Font Size) */}
+          <div className="flex-1 max-w-3xl flex flex-col gap-3">
+            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-text-primary/70">
+              <FiShield size={14} className="text-amber-600 shrink-0" />
               <span>Executive Buying Recommendation</span>
             </div>
             
-            <blockquote className="font-serif text-xl sm:text-2xl leading-relaxed text-text-primary font-normal italic">
-              &ldquo;{groqExecutiveVerdict}&rdquo;
-            </blockquote>
+            <p className="font-sans text-sm sm:text-base leading-relaxed text-text-primary/95 font-normal">
+              {groqExecutiveVerdict}
+            </p>
 
             {bestDeal.candidate.classificationReason && (
-              <p className="text-sm text-text-secondary border-l-2 border-border-strong pl-4 mt-1">
-                <span className="font-medium text-text-primary">Parity Note:</span>{' '}
+              <div className="text-xs sm:text-sm text-text-secondary border-l-2 border-black/15 pl-3.5 mt-1 leading-relaxed">
+                <span className="font-semibold text-text-primary">Parity Verification:</span>{' '}
                 {bestDeal.candidate.classificationReason}
-              </p>
+              </div>
             )}
           </div>
 
           {/* Right: Architectural Price Valuation Box */}
-          <div className="bg-surface rounded-xl border border-border-subtle p-6 min-w-[280px] flex flex-col gap-4">
+          <div className="backdrop-blur-md bg-white/70 rounded-2xl border border-black/[0.06] p-6 min-w-[280px] flex flex-col gap-3.5 shadow-xs shrink-0">
             <div>
-              <span className="text-xs font-medium text-text-secondary uppercase tracking-wider block">
+              <span className="text-xs font-semibold text-text-muted uppercase tracking-wider block">
                 Lowest Verified Valuation
               </span>
-              <div className="flex items-baseline gap-2 mt-1">
-                <span className="font-serif text-3xl sm:text-4xl font-semibold text-text-primary">
+              <div className="flex flex-wrap items-center gap-3 mt-1.5">
+                <span className="font-serif text-3xl sm:text-4xl font-normal text-text-primary tracking-tight">
                   ₹{bestDeal.candidate.normalizedPrice.toLocaleString('en-IN')}
                 </span>
-                <span className="text-xs font-medium uppercase text-text-muted">
-                  @ {bestDeal.candidate.raw.vendor}
-                </span>
+                <StoreBrandBadge vendor={bestDeal.candidate.raw.vendor} size="sm" />
               </div>
             </div>
 
             {savingsAmount > 0 && (
-              <div className="border-t border-border-subtle pt-3 flex items-center justify-between text-xs">
-                <div className="flex items-center gap-1.5 text-success font-medium">
-                  <FiTrendingDown size={14} />
+              <div className="border-t border-black/[0.06] pt-3 flex items-center justify-between text-xs">
+                <div className="flex items-center gap-1.5 text-emerald-800 font-medium">
+                  <FiTrendingDown size={14} className="text-emerald-600" />
                   <span>Max Market Variance</span>
                 </div>
-                <span className="font-mono font-semibold text-success">
-                  ₹{savingsAmount.toLocaleString('en-IN')} ({savingsPercent}%)
+                <span className="font-mono font-semibold text-emerald-900 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                  Save ₹{savingsAmount.toLocaleString('en-IN')} ({savingsPercent}%)
                 </span>
               </div>
             )}
 
-            <div className="border-t border-border-subtle pt-3 flex items-center justify-between text-xs text-text-secondary">
-              <span>Market Average:</span>
-              <span className="font-mono text-text-primary font-medium">
+            <div className="border-t border-black/[0.06] pt-3 flex items-center justify-between text-xs text-text-secondary">
+              <span>Market Benchmark Average:</span>
+              <span className="font-mono text-text-primary font-semibold">
                 ₹{priceDistribution.average.toLocaleString('en-IN')}
               </span>
             </div>
