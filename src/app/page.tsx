@@ -69,16 +69,20 @@ export default function Home() {
     setErrorMessage(null);
   };
 
+  const hasActiveState = Boolean(report || isLoading || errorMessage);
+
   return (
     <main className="min-h-screen flex flex-col justify-between bg-canvas text-text-primary">
-      <div>
+      <div className="flex-1 flex flex-col">
+        {/* Dynamic Header: Centered & Heroic initially, Sticky Top bar when analyzing/viewing dossier */}
         <IntelligenceHeader
           onAnalyze={handleAnalyze}
           isLoading={isLoading}
           statusMessage={statusMessage}
+          isCompact={hasActiveState}
         />
 
-        <div className="max-w-5xl mx-auto px-6 sm:px-12 pb-16">
+        <div className="max-w-5xl mx-auto px-6 sm:px-12 pb-16 w-full">
           {/* Error Banner */}
           {errorMessage && (
             <div className="my-8 p-6 rounded-2xl bg-warning-bg border border-warning/30 text-warning flex items-start gap-4">
@@ -97,24 +101,12 @@ export default function Home() {
             </div>
           )}
 
-          {/* Initial State when no active dossier and not loading */}
-          {!report && !isLoading && !errorMessage && (
-            <div className="my-16 text-center max-w-xl mx-auto">
-              <h2 className="font-serif text-2xl font-normal text-text-primary">
-                Universal Specification Parity & Price Intelligence
-              </h2>
-              <p className="text-text-secondary text-sm mt-2 leading-relaxed">
-                Enter any consumer product model or paste a direct store URL above. Our stateless engine routes across top marketplaces, extracts structured pricing, and uses Groq AI to verify exact specification parity while filtering accessory spam.
-              </p>
-            </div>
-          )}
-
           {/* Active Dossier State */}
           {report && !isLoading && (
-            <div className="animate-fade-in">
-              <div className="flex items-center justify-between mt-6 pb-2 border-b border-border-subtle text-xs text-text-secondary">
+            <div className="animate-fade-in mt-4">
+              <div className="flex items-center justify-between pb-3 border-b border-border-subtle text-xs text-text-secondary">
                 <span>
-                  Showing dossier for: <strong className="text-text-primary">&ldquo;{report.targetInput}&rdquo;</strong>
+                  Showing verified parity dossier for: <strong className="text-text-primary">&ldquo;{report.targetInput}&rdquo;</strong>
                 </span>
                 <button
                   type="button"
@@ -143,7 +135,7 @@ export default function Home() {
       </div>
 
       {/* Architectural Studio Footer */}
-      <footer className="border-t border-border-subtle bg-surface/50 py-8 px-6 sm:px-12 mt-auto">
+      <footer className="border-t border-border-subtle bg-surface/50 py-6 px-6 sm:px-12 mt-auto shrink-0">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-text-muted">
           <div className="flex items-center gap-2 font-serif text-sm text-text-primary">
             <span>Price Intelligence Dossier</span>
