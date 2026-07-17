@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Frances:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
-@theme {
+:root {
   --color-canvas: #faf8f5;
   --color-surface: #f4f0ea;
   --color-surface-elevated: #ffffff;
@@ -20,6 +20,48 @@
   
   --color-warning: #8c4f2b;
   --color-warning-bg: #f7efeb;
+}
+
+.dark {
+  --color-canvas: #0E0E0D;
+  --color-surface: #151514;
+  --color-surface-elevated: #1F1E1C;
+  --color-border-subtle: #2C2B28;
+  --color-border-strong: #403E39;
+  
+  --color-text-primary: #F9F8F6;
+  --color-text-secondary: #B5B2AC;
+  --color-text-muted: #75726C;
+  
+  --color-accent: #E6E9E7;
+  --color-accent-soft: #2E4036;
+  
+  --color-success: #86EFAC;
+  --color-success-bg: #14532D;
+  
+  --color-warning: #FDBA74;
+  --color-warning-bg: #7C2D12;
+}
+
+@theme {
+  --color-canvas: var(--color-canvas);
+  --color-surface: var(--color-surface);
+  --color-surface-elevated: var(--color-surface-elevated);
+  --color-border-subtle: var(--color-border-subtle);
+  --color-border-strong: var(--color-border-strong);
+  
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-muted: var(--color-text-muted);
+  
+  --color-accent: var(--color-accent);
+  --color-accent-soft: var(--color-accent-soft);
+  
+  --color-success: var(--color-success);
+  --color-success-bg: var(--color-success-bg);
+  
+  --color-warning: var(--color-warning);
+  --color-warning-bg: var(--color-warning-bg);
 
   --font-serif: 'Frances', Georgia, serif;
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -31,4 +73,18 @@ body {
   font-family: var(--font-sans);
   margin: 0;
   padding: 0;
+  transition: background-color 0.6s cubic-bezier(0.16, 1, 0.3, 1), color 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUpFill {
+  0% {
+    clip-path: circle(0% at 50% 100%);
+  }
+  100% {
+    clip-path: circle(150% at 50% 50%);
+  }
+}
+
+.animate-bottom-fill {
+  animation: slideUpFill 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

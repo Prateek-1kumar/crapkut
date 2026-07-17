@@ -7,9 +7,11 @@ import ExecutiveVerdictCard from '@/components/EditorialStudio/ExecutiveVerdictC
 import ParityDossierTable from '@/components/EditorialStudio/ParityDossierTable';
 import SpecTradeoffXRay from '@/components/EditorialStudio/SpecTradeoffXRay';
 import Threads from '@/components/ui/Threads';
+import { useTheme } from '@/components/ui/ThemeProvider';
 import { FiAlertTriangle, FiRefreshCw } from 'react-icons/fi';
 
 export default function Home() {
+  const { theme } = useTheme();
   const [report, setReport] = useState<ExecutiveComparisonReport | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -73,11 +75,11 @@ export default function Home() {
   const hasActiveState = Boolean(report || isLoading || errorMessage);
 
   return (
-    <main className="min-h-screen flex flex-col justify-between bg-canvas text-text-primary relative overflow-hidden">
-      {/* Interactive WebGL Threads Background */}
-      <div className="fixed inset-0 z-0 pointer-events-none opacity-45">
+    <main className="min-h-screen flex flex-col justify-between bg-canvas text-text-primary relative overflow-hidden transition-colors duration-500">
+      {/* Interactive WebGL Threads Background - Dynamic Dark & Light Mode Colors */}
+      <div className={`fixed inset-0 z-0 pointer-events-none transition-opacity duration-700 ${theme === 'dark' ? 'opacity-75' : 'opacity-45'}`}>
         <Threads
-          color={[0.18, 0.17, 0.16]}
+          color={theme === 'dark' ? [0.95, 0.95, 0.96] : [0.18, 0.17, 0.16]}
           amplitude={1.8}
           distance={0.3}
           enableMouseInteraction={true}
