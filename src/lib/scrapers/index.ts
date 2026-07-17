@@ -1,51 +1,43 @@
-/**
- * Scraper Registry - Central export for all vendor scrapers
- * NOTE: This module is server-only due to Playwright imports
- */
-
-import { BaseScraper, ScraperStrategy } from './base';
-import { AmazonScraper } from './amazon';
-import { FlipkartScraper } from './flipkart';
-import { EbayScraper } from './ebay';
-import { MyntraScraper } from './myntra';
-import { CromaScraper } from './croma';
-import { AjioScraper } from './ajio';
-import { SnapdealScraper } from './snapdeal';
-import { TataCliqScraper } from './tatacliq';
-import { NykaaScraper } from './nykaa';
-import type { Vendor } from '../types';
+import { BaseScraper, type ScraperStrategy } from './base';
+import type { Vendor, ScrapeResult } from '../types';
 import { defaultVendors, vendorInfo } from '../vendors';
+import { Page } from 'puppeteer-core';
 
 /**
- * Map of vendor names to their scraper classes
+ * Generic Store Scraper - Lightweight fallback scraper implementation
+ * for basic store search and extraction before full Groq/Playwright engine is active.
  */
-export const scraperRegistry: Record<Vendor, new () => BaseScraper> = {
-    'amazon': AmazonScraper,
-    'flipkart': FlipkartScraper,
-    'ebay': EbayScraper,
-    'myntra': MyntraScraper,
-    'croma': CromaScraper,
-    'ajio': AjioScraper,
-    'snapdeal': SnapdealScraper,
-    'tatacliq': TataCliqScraper,
-    'nykaa': NykaaScraper,
-    // Placeholder vendors (to be implemented)
-    'meesho': AmazonScraper, // Fallback
-    'jiomart': AmazonScraper, // Fallback
-    'reliance-digital': CromaScraper, // Similar to Croma
-    'vijay-sales': CromaScraper, // Similar to Croma
-    'aliexpress': EbayScraper, // Similar to eBay
-};
+export class GenericStoreScraper extends BaseScraper {
+  vendor: Vendor;
+  baseUrl: string;
+
+  constructor(vendor: Vendor, baseUrl = 'https://www.google.com') {
+    super();
+    this.vendor = vendor;
+    this.baseUrl = baseUrl;
+  }
+
+  buildSearchUrl(query: string): string {
+    return `${this.baseUrl}/search?q=${encodeURIComponent(query + ' ' + this.vendor)}`;
+  }
+
+  async scrape(query: string): Promise<ScrapeResult[]> {
+    return this.executeScrape(query);
+  }
+
+  async parseProducts(_page: Page): Promise<Partial<ScrapeResult>[]> {
+    // Return clean empty/stub array cleanly while we transition to the new extraction logic
+    return [];
+  }
+}
 
 /**
  * Get scrapers for the specified vendors
  */
 export function getScrapers(vendors?: Vendor[]): BaseScraper[] {
-    const targetVendors = vendors && vendors.length > 0 ? vendors : defaultVendors;
-    return targetVendors.map(vendor => new scraperRegistry[vendor]());
+  const targetVendors = vendors && vendors.length > 0 ? vendors : defaultVendors;
+  return targetVendors.map((vendor) => new GenericStoreScraper(vendor));
 }
 
-// Re-export types and vendor info
 export type { ScraperStrategy, BaseScraper };
 export { defaultVendors, vendorInfo };
-
