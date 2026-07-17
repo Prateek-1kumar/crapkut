@@ -6,6 +6,7 @@ import IntelligenceHeader from '@/components/EditorialStudio/IntelligenceHeader'
 import ExecutiveVerdictCard from '@/components/EditorialStudio/ExecutiveVerdictCard';
 import ParityDossierTable from '@/components/EditorialStudio/ParityDossierTable';
 import SpecTradeoffXRay from '@/components/EditorialStudio/SpecTradeoffXRay';
+import Threads from '@/components/ui/Threads';
 import { FiAlertTriangle, FiRefreshCw } from 'react-icons/fi';
 
 export default function Home() {
@@ -72,8 +73,18 @@ export default function Home() {
   const hasActiveState = Boolean(report || isLoading || errorMessage);
 
   return (
-    <main className="min-h-screen flex flex-col justify-between bg-canvas text-text-primary">
-      <div className="flex-1 flex flex-col">
+    <main className="min-h-screen flex flex-col justify-between bg-canvas text-text-primary relative overflow-hidden">
+      {/* Interactive WebGL Threads Background */}
+      <div className="fixed inset-0 z-0 pointer-events-none opacity-45">
+        <Threads
+          color={[0.18, 0.17, 0.16]}
+          amplitude={1.8}
+          distance={0.3}
+          enableMouseInteraction={true}
+        />
+      </div>
+
+      <div className="flex-1 flex flex-col relative z-10">
         {/* Dynamic Header: Centered & Heroic initially, Sticky Top bar when analyzing/viewing dossier */}
         <IntelligenceHeader
           onAnalyze={handleAnalyze}
